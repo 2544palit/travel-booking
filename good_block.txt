@@ -1,0 +1,249 @@
+function applyFilters() {
+      const data = allData[currentType] || [];
+      const maxPrice = parseFloat(document.getElementById('filter-price').value);
+      const sortType = document.getElementById('sort-select').value;
+      
+      const checkedAirlines = Array.from(document.querySelectorAll('.airline-filter:checked')).map(cb => cb.value);
+      const checkedStars = Array.from(document.querySelectorAll('.star-filter:checked')).map(cb => parseInt(cb.value));
+      
+      let filtered = data.filter(item => {
+        const comparePrice = item.pricePerNight || item.totalPrice;
+        if (comparePrice > maxPrice) return false;
+        
+        if (currentType === 'flight') {
+          const airlineStr = item.details.airline || '';
+          return checkedAirlines.some(cb => airlineStr.includes(cb));
+        } else if (currentType === 'hotel') {
+          const rawRating = item.details.rating || 4;
+          const rating = rawRating > 5 ? Math.round(rawRating / 2) : Math.floor(rawRating);
+          return checkedStars.includes(rating);
+        } else if (currentType === 'package') {
+          const obAirlines = (item.details.outbound?.airline || '');
+          const rtAirlines = (item.details.returnFlight?.airline || '');
+          const allPackageAirlines = obAirlines + ' / ' + rtAirlines;
+          const rawRating = item.details.hotel?.rating || 4;
+          const rating = rawRating > 5 ? Math.round(rawRating / 2) : Math.floor(rawRating);
+          return checkedAirlines.some(cb => allPackageAirlines.includes(cb)) && checkedStars.includes(rating);
+        }
+        return true;
+      });
+
+      // Sorting
+      if (sortType === 'price_asc') {
+        filtered.sort((a,b) => (a.pricePerNight || a.totalPrice) - (b.pricePerNight || b.totalPrice));
+      } else if (sortType === 'price_desc') {
+        filtered.sort((a,b) => (b.pricePerNight || b.totalPrice) - (a.pricePerNight || a.totalPrice));
+      }
+
+      renderCards(filtered);
+    }
+
+    let currentRenderLimit = 20;
+    let currentRenderData = [];
+
+    function renderCards(data) {
+      const container = document.getElementById('results-container');
+      document.getElementById('results-count').textContent = data.length;
+      
+      currentRenderData = data;
+      currentRenderLimit = 20;
+
+      if (data.length === 0) {
+        container.innerHTML = `<div class="text-center py-12 text-gray-500 animate-[fadeIn_0.3s_ease-out]">ไม่พบรายการที่ค้นหาตามเงื่อนไขที่เลือก</div>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      renderNextBatch();
+    }
+
+    function renderNextBatch() {
+      const container = document.getElementById('results-container');
+      
+      // Remove Load More button if it exists
+      const oldBtn = document.getElementById('load-more-btn');
+      if (oldBtn) oldBtn.remove();
+
+      const itemsToRender = currentRenderData.slice(container.children.length, currentRenderLimit);
+      const startIndex = container.children.length;
+
+      itemsToRender.forEach((item, index) => {
+        const div = document.createElement('div');
+        // Smooth staggered animation
+        div.className = 'bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-primary/30 transition overflow-hidden flex flex-col md:flex-row animate-[fadeInUp_0.4s_ease-out_forwards] opacity-0 cursor-pointer';
+        div.onclick = () => openDetailsModal(item.itemId);
+        // Cap animation delay to 300ms so it doesn't wait forever on long lists
+        div.style.animationDelay = `${Math.min(index * 40, 300)}ms`;
+        
+        if (currentType === 'flight') {
+          const airline = item.details.airline || 'Airlines';
+          // Feature 4: Value Badges
+          const isConnecting = item.details.isConnecting;
+          const badgeHtml = isConnecting
+            ? `<span class="bg-orange-100 text-orange-700 text-[10px] font-bold px-2 py-0.5 rounded-full">ประหยัด 15%</span>`
+            : `<span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full">✈ บินตรง</span>`;
+          
+          // Feature 2: Enhanced connecting flight visual
+          const midSection = isConnecting ? `
+            <div class="flex-1 px-4 flex flex-col items-center">
+              <div class="w-full flex items-center gap-1 mb-1">
+                <div class="flex-1 h-[2px] bg-blue-200"></div>
+                <div class="flex flex-col items-center">
+                  <div class="w-3 h-3 bg-white border-2 border-primary rounded-full shadow-sm"></div>
+                  <span class="text-[9px] text-primary font-bold mt-0.5">BKK</span>
+                </div>
+                <div class="flex-1 h-[2px] bg-blue-200"></div>
+              </div>
+              <span class="bg-orange-50 border border-orange-200 text-orange-600 text-[9px] font-medium px-1.5 py-0.5 rounded">
+                พัก ${item.details.layoverHours} ชม.
+              </span>
+              <p class="text-[10px] text-gray-400 mt-1">${item.details.duration}</p>
+            </div>` : `
+            <div class="flex-1 px-4 flex flex-col items-center">
+              <p class="text-xs text-gray-400 mb-1">บินตรง</p>
+              <div class="w-full h-[2px] bg-gray-200 relative">
+                <span class="material-symbols-outlined absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-primary rotate-90" style="font-size: 16px">flight</span>
+              </div>
+              <p class="text-[10px] text-gray-400 mt-1">${item.details.duration || ''}</p>
+            </div>`;
+
+          div.innerHTML = `
+            <div class="p-6 flex-1 border-b md:border-b-0 md:border-r border-gray-100">
+              <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-primary font-bold text-xs">${airline.substring(0,2).toUpperCase()}</div>
+                  <div>
+                    <h4 class="font-bold text-gray-800">${airline}</h4>
+                    <p class="text-xs text-gray-500">${item.details.flightNo} • ${item.details.seatType || 'Economy'}</p>
+                  </div>
+                </div>
+                ${badgeHtml}
+              </div>
+              <div class="flex items-center justify-between px-2">
+                <div class="text-center">
+                  <p class="text-xs text-primary font-bold mb-1">${formatDate(item.details.departureTime)}</p>
+                  <p class="text-xl font-bold font-display">${formatTime(item.details.departureTime)}</p>
+                  <p class="text-sm text-gray-500 mt-1">${item.details.origin}</p>
+                </div>
+                ${midSection}
+                <div class="text-center">
+                  <p class="text-xs text-primary font-bold mb-1">${formatDate(item.details.arrivalTime)}</p>
+                  <p class="text-xl font-bold font-display">${formatTime(item.details.arrivalTime)}</p>
+                  <p class="text-sm text-gray-500 mt-1">${item.details.destination}</p>
+                </div>
+              </div>
+            </div>
+            <div class="p-6 md:w-56 bg-gray-50 flex flex-col justify-center items-center md:items-end text-center md:text-right">
+              <p class="text-xs text-gray-500 mb-1">ราคาต่อท่าน</p>
+              <h3 class="text-2xl font-bold text-tertiary font-display mb-3">${formatPrice(item.totalPrice)}</h3>
+              <button onclick="event.stopPropagation(); handleAddToCart('${item.itemId}', 'flight')" class="w-full bg-white border border-primary text-primary hover:bg-blue-50 py-2 px-4 rounded-lg font-medium transition flex items-center justify-center gap-2">
+                เพิ่มลงตะกร้า
+              </button>
+            </div>
+          `;
+        } else if (currentType === 'package') {
+          // === Package Deal Card (Agoda-style) ===
+          const h = item.details.hotel || {};
+          const ob = item.details.outbound;
+          const rt = item.details.returnFlight;
+          const imgUrl = h.imageUrl || 'https://images.unsplash.com/photo-1566073771259-6a8506099945';
+          const amenitiesHtml = (h.amenities || []).slice(0,3).map(a => `<span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">${a}</span>`).join('');
+          
+          const obBadge = ob.isConnecting ? `<span class="bg-orange-100 text-orange-700 text-[10px] px-1 rounded ml-1">ต่อเครื่อง via BKK</span>` : `<span class="bg-green-100 text-green-700 text-[10px] px-1 rounded ml-1">บินตรง</span>`;
+          const rtBadge = (rt && rt.isConnecting) ? `<span class="bg-orange-100 text-orange-700 text-[10px] px-1 rounded ml-1">ต่อเครื่อง via BKK</span>` : (rt ? `<span class="bg-green-100 text-green-700 text-[10px] px-1 rounded ml-1">บินตรง</span>` : '');
+
+          const flightInfoHtml = ob ? `
+            <div class="bg-green-50 border border-green-200 rounded-lg px-3 py-2 mt-3 text-xs">
+              <div class="flex items-center gap-1 text-green-700 font-bold mb-1">
+                <span class="material-symbols-outlined text-[14px]">flight</span>
+                รวมตั๋วเครื่องบินไป-กลับแล้ว
+              </div>
+              <p class="text-green-600">
+                ✈ ขาไป: ${formatDate(ob.departureTime)} ${formatTime(ob.departureTime)} น. (${ob.airline} ${ob.flightNo}) ${obBadge}
+                ${rt ? `<br>✈ ขากลับ: ${formatDate(rt.departureTime)} ${formatTime(rt.departureTime)} น. (${rt.airline} ${rt.flightNo}) ${rtBadge}` : ''}
+              </p>
+            </div>` : '';
+
+          div.className = 'bg-white rounded-xl shadow-sm border-2 border-orange-200 hover:shadow-lg hover:border-orange-400 transition overflow-hidden flex flex-col md:flex-row animate-[fadeInUp_0.4s_ease-out_forwards] opacity-0 cursor-pointer relative';
+          div.onclick = () => openDetailsModal(item.itemId);
+          
+          div.innerHTML = `
+            <div class="absolute top-0 left-0 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] font-bold px-3 py-1 rounded-br-lg z-10 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[12px]">local_offer</span>
+              แพ็กเกจดีลรวม ลด ${item.discountPercent}%
+            </div>
+            <div class="w-full md:w-72 h-48 md:h-auto relative flex-shrink-0">
+              <img src="${imgUrl}?w=600&auto=format&fit=crop&q=80" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&auto=format&fit=crop&q=80'" class="absolute inset-0 w-full h-full object-cover" alt="Hotel">
+              <div class="absolute top-8 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold flex items-center gap-1 shadow-sm">
+                <span class="material-symbols-outlined text-[14px] text-yellow-500">star</span> ${h.rating || 4.5}
+              </div>
+            </div>
+            <div class="p-5 flex-1 flex flex-col justify-between">
+              <div>
+                <h3 class="text-lg font-bold text-gray-800 font-display">${h.hotelName || 'โรงแรม'}</h3>
+                <p class="text-sm text-gray-500 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> ${h.location || ''}</p>
+                <p class="text-xs text-gray-400">${h.roomType || ''} • ${item.defaultNights} คืน</p>
+                <div class="flex flex-wrap gap-2 mt-2">${amenitiesHtml}</div>
+                ${flightInfoHtml}
+              </div>
+            </div>
+            <div class="p-5 md:w-60 bg-orange-50 flex flex-col justify-center items-center md:items-end text-center md:text-right gap-1">
+              <span class="bg-orange-100 text-orange-700 text-[10px] font-bold px-2 py-0.5 rounded-full">ประหยัด ${formatPrice(item.discountAmount)}</span>
+              <p class="text-xs text-gray-500 mt-1">เที่ยวบิน + ที่พัก ${item.defaultNights} คืน</p>
+              <p class="text-sm text-gray-400 line-through">${formatPrice(item.originalPrice)}</p>
+              <h3 class="text-2xl font-bold text-tertiary font-display">${formatPrice(item.totalPrice)}</h3>
+              <p class="text-[10px] text-gray-400">ราคาต่อท่าน/แพ็กเกจ</p>
+              <button onclick="event.stopPropagation(); handleAddPackageToCart('${item.itemId}')" class="w-full mt-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-2.5 rounded-lg transition shadow-md flex items-center justify-center gap-1 text-sm">
+                <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                เลือกแพ็กเกจนี้
+              </button>
+            </div>
+          `;
+        } else {
+          const amenitiesHtml = (item.details.amenities || []).slice(0,3).map(a => `<span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">${a}</span>`).join('');
+          const imgUrl = item.details.imageUrl || 'https://images.unsplash.com/photo-1566073771259-6a8506099945';
+          // Feature 4: Hotel badges
+          const rating = item.details.rating || 4.0;
+          const hotelBadge = rating >= 4.7
+            ? `<span class="bg-yellow-100 text-yellow-700 text-[10px] font-bold px-2 py-0.5 rounded-full">★ Premium</span>`
+            : `<span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full">ยกเลิกฟรี</span>`;
+          div.innerHTML = `
+            <div class="w-full md:w-72 h-48 md:h-auto relative flex-shrink-0">
+              <img src="${imgUrl}?w=600&auto=format&fit=crop&q=80" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&auto=format&fit=crop&q=80'" class="absolute inset-0 w-full h-full object-cover" alt="Hotel">
+              <div class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold flex items-center gap-1 shadow-sm">
+                <span class="material-symbols-outlined text-[14px] text-yellow-500">star</span> ${item.details.rating || 4.5}
+              </div>
+              <div class="absolute bottom-2 left-2">${hotelBadge}</div>
+            </div>
+            <div class="p-5 flex-1 flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-100">
+              <div>
+                <h3 class="text-lg font-bold text-gray-800 font-display">${item.details.hotelName}</h3>
+                <p class="text-sm text-gray-500 mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> ${item.details.location}</p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                  ${amenitiesHtml}
+                </div>
+              </div>
+            </div>
+            <div class="p-5 md:w-56 bg-gray-50 flex flex-col justify-center items-center md:items-end text-center md:text-right">
+              <p class="text-sm font-medium text-gray-800 mb-1">${item.details.roomType}</p>
+              <p class="text-xs text-gray-500 mb-1">ราคาต่อคืน</p>
+              <h3 class="text-2xl font-bold text-tertiary font-display mb-3">${formatPrice(item.totalPrice / (item.details.nights || 1))}</h3>
+              <button onclick="event.stopPropagation(); openDetailsModal('${item.itemId}')" class="w-full bg-primary/10 text-primary hover:bg-primary hover:text-white border border-primary font-medium py-2 rounded-lg transition">เลือกวันเข้าพัก</button>
+            </div>
+          `;
+        }
+        container.appendChild(div);
+      });
+
+      if (currentRenderLimit < currentRenderData.length) {
+        const loadMoreBtn = document.createElement('button');
+        loadMoreBtn.id = 'load-more-btn';
+        loadMoreBtn.className = 'w-full py-3 mt-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition';
+        loadMoreBtn.textContent = 'แสดงข้อมูลเพิ่มเติม';
+        loadMoreBtn.onclick = () => {
+          currentRenderLimit += 20;
+          renderNextBatch();
+        };
+        container.appendChild(loadMoreBtn);
+      }
+    }

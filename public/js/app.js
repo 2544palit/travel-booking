@@ -340,3 +340,149 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.insertAdjacentHTML('beforeend', modalHtml);
   }
 });
+
+// --- Notifications System ---
+
+// Initialize default notifications if empty
+function getStoredNotifications() {
+    const stored = localStorage.getItem('litrip_notifications');
+    if (stored) {
+        return JSON.parse(stored);
+    }
+    
+    // Default welcome notification
+    const defaults = [{
+        id: 'notif_welcome',
+        type: 'promo',
+        icon: 'campaign',
+        iconBg: 'bg-blue-50 text-blue-600',
+        title: '🎉 ยินดีต้อนรับสู่ Litrip',
+        desc: 'เริ่มต้นการเดินทางสุดพิเศษของคุณได้แล้ววันนี้ พร้อมรับสิทธิพิเศษมากมาย',
+        time: 'ล่าสุด',
+        actionPath: 'landing',
+        read: false
+    }];
+    localStorage.setItem('litrip_notifications', JSON.stringify(defaults));
+    return defaults;
+}
+
+window.addNotification = function(notif) {
+    const notifs = getStoredNotifications();
+    const newNotif = {
+        id: 'notif_' + Date.now(),
+        type: notif.type || 'system',
+        icon: notif.icon || 'notifications',
+        iconBg: notif.iconBg || 'bg-gray-50 text-gray-600',
+        title: notif.title || 'การแจ้งเตือนใหม่',
+        desc: notif.desc || '',
+        time: notif.time || 'เมื่อสักครู่',
+        actionPath: notif.actionPath || 'dashboard',
+        read: false
+    };
+    notifs.unshift(newNotif); // Add to top
+    // Keep only latest 20 notifications
+    if (notifs.length > 20) notifs.pop();
+    
+    localStorage.setItem('litrip_notifications', JSON.stringify(notifs));
+    renderNotifications();
+};
+
+function renderNotifications() {
+    const notifList = document.getElementById('notif-list');
+    const countBadge = document.getElementById('notif-count');
+    const redDot = document.getElementById('notif-badge');
+    
+    if (!notifList) return;
+    
+    let notifs = getStoredNotifications();
+    let unreadCount = notifs.filter(n => !n.read).length;
+
+    notifList.innerHTML = '';
+    
+    if (notifs.length === 0) {
+        notifList.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">ไม่มีการแจ้งเตือน</div>';
+    } else {
+        notifs.forEach(n => {
+            const item = document.createElement('div');
+            // Gray out background if read
+            const bgClass = n.read ? 'bg-transparent opacity-70' : 'bg-white hover:bg-gray-50';
+            item.className = `p-4 border-b border-gray-100/50 cursor-pointer transition-colors flex gap-4 group ${bgClass}`;
+            item.onclick = (e) => {
+                e.stopPropagation();
+                
+                // Mark this single item as read
+                if (!n.read) {
+                    n.read = true;
+                    localStorage.setItem('litrip_notifications', JSON.stringify(notifs));
+                    renderNotifications();
+                }
+                
+                if (n.actionPath === 'vip') {
+                    if (typeof openVipModal === 'function') openVipModal();
+                } else if (n.actionPath) {
+                    navigateTo(n.actionPath);
+                }
+                toggleNotifications();
+            };
+            
+            item.innerHTML = `
+                <div class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center shadow-sm ${n.iconBg} group-hover:scale-105 transition-transform mt-0.5">
+                    <span class="material-symbols-outlined text-[20px]">${n.icon}</span>
+                </div>
+                <div class="flex-1 min-w-0 relative">
+                    ${!n.read ? '<div class="absolute -left-3 top-1.5 w-1.5 h-1.5 bg-[#fe932c] rounded-full"></div>' : ''}
+                    <h4 class="text-[13px] font-bold text-[#001334] mb-1 truncate ${n.read ? 'text-gray-600' : ''}">${n.title}</h4>
+                    <p class="text-xs text-gray-500 leading-relaxed line-clamp-2 pr-2">${n.desc}</p>
+                    <span class="text-[10px] font-bold text-gray-400 mt-2 block">${n.time}</span>
+                </div>
+            `;
+            notifList.appendChild(item);
+        });
+    }
+
+    if (countBadge) countBadge.textContent = unreadCount;
+    if (redDot) {
+        if (unreadCount === 0) redDot.classList.add('hidden');
+        else redDot.classList.remove('hidden');
+    }
+}
+
+function toggleNotifications(e) {
+    if(e) e.stopPropagation();
+    const dropdown = document.getElementById('notif-dropdown');
+    if (!dropdown) return;
+    
+    if (dropdown.classList.contains('hidden')) {
+        dropdown.classList.remove('hidden');
+        dropdown.classList.add('flex');
+        renderNotifications();
+    } else {
+        dropdown.classList.add('hidden');
+        dropdown.classList.remove('flex');
+    }
+}
+
+window.markNotifAsRead = function(e) {
+    if(e) e.stopPropagation();
+    let notifs = getStoredNotifications();
+    notifs.forEach(n => n.read = true);
+    localStorage.setItem('litrip_notifications', JSON.stringify(notifs));
+    renderNotifications();
+}
+
+// Global click outside to close dropdown
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('notif-dropdown');
+    const container = document.getElementById('notification-container');
+    if (dropdown && !dropdown.classList.contains('hidden')) {
+        if (container && !container.contains(e.target)) {
+            dropdown.classList.add('hidden');
+            dropdown.classList.remove('flex');
+        }
+    }
+});
+
+// Run render on load delay
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(renderNotifications, 300);
+});

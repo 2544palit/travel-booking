@@ -14,10 +14,10 @@
       theme: {
         extend: {
           colors: {
-            primary: '#006194',
-            secondary: '#565e74',
-            tertiary: '#994100',
-            background: '#f8f9ff',
+            primary: '#001334',
+            secondary: '#fe932c',
+            tertiary: '#d97706',
+            background: '#f6f7fb',
             surface: '#ffffff',
           },
           fontFamily: {
@@ -39,36 +39,82 @@
 <body class="text-secondary">
 
   <!-- Header -->
-  <header class="fixed w-full top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('landing')">
-        <span class="material-symbols-outlined text-primary text-3xl">flight_takeoff</span>
-        <span class="font-display font-bold text-xl text-primary">Litrip</span>
+  <header class="fixed w-full top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-[#001334]/5">
+    <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
+      
+      <!-- 1. Logo -->
+      <div class="flex items-center gap-3 cursor-pointer group" onclick="navigateTo('landing')">
+        <div class="w-10 h-10 bg-[#001334] rounded-xl flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
+          <span class="material-symbols-outlined text-[24px]">flight_takeoff</span>
+        </div>
+        <span class="font-display font-extrabold text-xl text-[#001334] tracking-widest mt-1">LITRIP</span>
       </div>
-      <nav class="hidden md:flex items-center gap-6 font-medium">
-        <a href="#" onclick="navigateTo('landing')" class="text-primary hover:text-primary/80">หน้าแรก</a>
-        <a href="#" onclick="navigateTo('search')" class="hover:text-primary">ค้นหา</a>
-        <a href="#" onclick="navigateTo('dashboard')" class="hover:text-primary">ทริปของฉัน</a>
+
+      <!-- 2. Center Nav Links (Cleaned up, 3 main links) -->
+      <nav class="hidden md:flex items-center gap-6 text-[15px]">
+        <a href="#" onclick="navigateTo('landing')" class="px-6 py-2.5 rounded-xl transition-all duration-300 font-bold bg-blue-50 text-[#001334] shadow-sm">หน้าแรก</a>
+        <a href="#" onclick="navigateTo('search')" class="px-6 py-2.5 rounded-xl transition-all duration-300 font-bold text-gray-500 hover:text-[#001334] hover:bg-blue-50">ค้นหาทริป</a>
+        <a href="#" onclick="navigateTo('dashboard')" class="px-6 py-2.5 rounded-xl transition-all duration-300 font-bold text-gray-500 hover:text-[#001334] hover:bg-blue-50">ทริปของฉัน</a>
       </nav>
-      <div class="flex items-center gap-4">
-        <div class="relative cursor-pointer" onclick="navigateTo('trip-details')">
-          <span class="material-symbols-outlined">shopping_cart</span>
-          <span class="cart-badge absolute -top-2 -right-2 bg-tertiary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+
+      <!-- 3. Right Utilities -->
+      <div class="flex items-center gap-5">
+        
+        <div class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full text-[11px] font-bold text-gray-600 cursor-pointer hover:bg-gray-200 transition-colors tracking-wide">
+          <span class="material-symbols-outlined text-[16px]">language</span> THB | TH
         </div>
+
+        <div class="relative cursor-pointer hover:text-[#fe932c] transition-colors text-gray-700" onclick="navigateTo('trip-details')">
+          <span class="material-symbols-outlined text-[26px]">local_mall</span>
+          <span class="cart-badge absolute -top-1.5 -right-1.5 bg-[#fe932c] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
+        </div>
+        
+        <div class="relative cursor-pointer text-gray-700 hidden sm:block" id="notification-container">
+          <div class="hover:text-[#fe932c] transition-colors relative" onclick="toggleNotifications(event)">
+            <span class="material-symbols-outlined text-[26px]">notifications</span>
+            <div id="notif-badge" class="absolute top-0 right-1 w-2.5 h-2.5 bg-[#fe932c] rounded-full border-2 border-white"></div>
+          </div>
+          
+          <!-- Dropdown Window -->
+          <div id="notif-dropdown" class="absolute top-full right-[-60px] md:right-[-20px] mt-7 w-[340px] md:w-[380px] bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,19,52,0.15)] border border-gray-100 hidden flex-col z-[100] cursor-default before:content-[''] before:absolute before:-top-2 before:right-[68px] md:before:right-[28px] before:w-4 before:h-4 before:bg-white before:rotate-45 before:border-l before:border-t before:border-gray-100" onclick="event.stopPropagation()">
+            <div class="p-4 border-b border-gray-50 flex items-center justify-between bg-white/95 backdrop-blur-md rounded-t-2xl">
+              <div class="flex items-center gap-2">
+                <h3 class="font-extrabold text-[#001334] text-base">การแจ้งเตือน</h3>
+                <span class="bg-[#fe932c] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full" id="notif-count">2</span>
+              </div>
+              <button onclick="markNotifAsRead(event)" class="text-xs font-semibold text-gray-400 hover:text-[#fe932c] transition-colors">อ่านแล้วทั้งหมด</button>
+            </div>
+            
+            <div id="notif-list" class="max-h-[380px] overflow-y-auto flex flex-col bg-gray-50/30">
+              <!-- JS Injected Items -->
+            </div>
+            
+            <div class="p-3 bg-white border-t border-gray-100 text-center rounded-b-2xl shadow-[0_-4px_10px_rgb(0,0,0,0.02)]">
+              <button onclick="navigateTo('dashboard')" class="text-xs font-bold text-[#001334] hover:text-[#fe932c] transition-colors">จัดการการเดินทางทั้งหมด</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Auth Buttons -->
         <div class="auth-buttons flex gap-2">
-          <button onclick="navigateTo('login')" class="px-4 py-2 text-primary font-medium hover:bg-blue-50 rounded-lg">เข้าสู่ระบบ</button>
-          <button onclick="navigateTo('login')" class="px-4 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 shadow-md">สมัครสมาชิก</button>
+          <button onclick="navigateTo('login')" class="px-5 py-2.5 text-[#001334] font-bold hover:bg-blue-50 rounded-xl transition-colors text-sm">เข้าสู่ระบบ</button>
+          <button onclick="navigateTo('login')" class="px-5 py-2.5 bg-[#001334] text-white font-bold rounded-xl hover:bg-[#001334]/90 shadow-md transition-colors text-sm">สมัครสมาชิก</button>
         </div>
-        <div class="profile-area hidden items-center gap-3 cursor-pointer" onclick="navigateTo('dashboard')">
-          <div class="text-right hidden sm:block">
-            <div class="profile-name text-sm font-bold text-primary">User</div>
-            <div class="profile-tier text-xs text-tertiary">Member</div>
+
+        <!-- Profile Area -->
+        <div class="profile-area hidden items-center gap-3 cursor-pointer bg-blue-50/60 border border-blue-100/50 rounded-full p-1.5 pl-4 hover:bg-blue-50 transition-colors" onclick="navigateTo('dashboard')">
+          <div class="text-right hidden sm:block leading-tight pt-0.5">
+            <div class="profile-name text-xs font-extrabold text-[#001334]" id="head-user-name">User</div>
+            <div class="profile-tier text-[9px] font-black text-[#b45309] tracking-wider mt-0.5 uppercase flex items-center justify-end gap-0.5" id="head-user-tier"><span class="text-[10px]">👑</span> Member</div>
           </div>
-          <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-            <span class="material-symbols-outlined">person</span>
+          <div class="w-9 h-9 bg-[#001334] rounded-full flex items-center justify-center text-white shadow-sm">
+            <span class="material-symbols-outlined text-[20px]">person</span>
           </div>
-          <span class="material-symbols-outlined text-gray-400 hover:text-red-500" onclick="event.stopPropagation(); logout();" title="Logout">logout</span>
+          <div class="pr-2 text-gray-400 hover:text-red-500 transition-colors flex items-center" onclick="event.stopPropagation(); logout();" title="ออกจากระบบ">
+            <span class="material-symbols-outlined text-[20px]">logout</span>
+          </div>
         </div>
+
       </div>
     </div>
   </header>

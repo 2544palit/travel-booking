@@ -1,0 +1,81 @@
+if (currentType === 'flight') {
+          const airptNames = { 'BKK':'สุวรรณภูมิ', 'DMK':'ดอนเมือง', 'NRT':'นาริตะ', 'HND':'ฮาเนดะ', 'KIX':'คันไซ', 'CTS':'นิวชิโตเสะ', 'SIN':'ชางงี', 'ICN':'อินชอน', 'LHR':'ฮีทโธรว์', 'CDG':'ชาร์ล เดอ โกล', 'SYD':'ซิดนีย์', 'DEL':'นิวเดลี', 'CNX':'เชียงใหม่', 'HKT':'ภูเก็ต', 'KBV':'กระบี่' };
+          const getAirpt = (code) => airptNames[code] || code;
+                    const airline = item.details.airline || 'Airlines';
+          const airlineCode = airline.includes('Thai') ? 'TG' : airline.includes('Singapore') ? 'SQ' : airline.includes('ANA') ? 'NH' : airline.includes('Japan') ? 'JL' : 'FL';
+          const isConnecting = item.details.isConnecting;
+          const duration = item.details.layoverHours ? `9 ชม. 15 นาที` : `6 ชม. 00 นาที`;
+          const layoverText = isConnecting ? `<span class="bg-[#fe932c]/10 border border-[#fe932c]/30 text-[#fe932c] text-[10px] px-1.5 py-0.5 rounded">แวะ 1 จุด</span>` : `<span class="text-[10px] text-gray-500">บินตรง (Non-stop)</span>`;
+          
+          div.className = 'bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col border border-[#001334]/10 cursor-pointer animate-[fadeInUp_0.4s_ease-out_forwards] opacity-0 mb-4';
+          div.onclick = () => openDetailsModal(item.itemId);
+          div.style.animationDelay = `${Math.min(index * 40, 300)}ms`;
+
+          div.innerHTML = `
+            <!-- ชั้นที่ 1: ข้อมูลสายการบิน (Card Header) -->
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 w-full border-b border-[#001334]/5">
+              <!-- ซ้าย: โลโก้ และ ชื่อ -->
+              <div class="flex items-start md:items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-[#001334] flex items-center justify-center font-bold text-white text-lg shadow-sm flex-shrink-0">
+                  ${airlineCode}
+                </div>
+                <div class="flex flex-col">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="font-bold text-[#001334] text-lg whitespace-nowrap">${airline}</span>
+                    <span class="bg-gray-100 text-[#001334] text-xs px-2 py-0.5 rounded font-medium whitespace-nowrap">${item.details.flightNo || (airlineCode + '-100')}</span>
+                    <span class="bg-[#fe932c]/10 text-[#d97706] border border-[#fe932c]/20 text-xs px-2 py-0.5 rounded font-semibold flex items-center gap-1 whitespace-nowrap">VIP Preferred</span>
+                  </div>
+                  <span class="text-xs text-gray-500 mt-1 whitespace-nowrap">${item.details.aircraft || 'Boeing 787-9 Dreamliner'} • ชั้น ${item.details.seatType === 'business' ? 'Business' : 'Economy'}</span>
+                </div>
+              </div>
+              
+              <!-- ขวา: สิทธิประโยชน์ -->
+              <div class="flex items-center gap-4 mt-2 md:mt-0 flex-shrink-0">
+                <div class="flex items-center gap-1 text-xs text-[#001334] font-medium whitespace-nowrap"><span class="material-symbols-outlined text-[16px]">wifi</span> Wi-Fi ฟรี</div>
+                <div class="flex items-center gap-1 text-xs text-[#001334] font-medium whitespace-nowrap"><span class="material-symbols-outlined text-[16px]">restaurant</span> อาหารเลิศรส</div>
+              </div>
+            </div>
+
+            <!-- ชั้นที่ 2: เวลาเดินทาง และ ราคา (Card Body) -->
+            <div class="flex flex-col md:flex-row items-center justify-between p-5 w-full">
+              
+              <!-- โซนเวลาและเส้นทาง (70%) -->
+              <div class="flex-1 w-full flex items-center justify-between md:pr-10">
+                <!-- ต้นทาง -->
+                <div class="flex flex-col text-left min-w-[80px]">
+                  <span class="text-3xl font-bold text-[#001334] whitespace-nowrap">${formatTime(item.details.departureTime)}</span>
+                  <span class="font-bold text-sm text-[#001334] whitespace-nowrap">${item.details.origin || 'กรุงเทพฯ (BKK)'}</span>
+                  <span class="text-[11px] text-gray-400 whitespace-nowrap">${getAirpt(item.details.origin)} • ${formatDate(item.details.departureTime)}</span>
+                </div>
+                
+                <!-- เส้นทางตรงกลาง -->
+                <div class="flex-1 px-4 md:px-8 flex flex-col items-center min-w-[120px]">
+                  <span class="text-xs text-gray-500 mb-1.5 flex items-center gap-1 whitespace-nowrap font-medium"><span class="material-symbols-outlined text-[14px]">schedule</span> ${duration}</span>
+                  <div class="w-full flex items-center gap-0 opacity-80">
+                    <div class="w-2 h-2 rounded-full bg-[#001334]"></div>
+                    <div class="flex-1 h-[1.5px] bg-[#001334]/30 border-t border-dashed border-[#001334]/40"></div>
+                    <span class="material-symbols-outlined text-[#001334] text-[18px] transform rotate-90 mx-2">flight</span>
+                    <div class="flex-1 h-[1.5px] bg-[#001334]/30 border-t border-dashed border-[#001334]/40"></div>
+                    <div class="w-2 h-2 rounded-full bg-[#fe932c]"></div>
+                  </div>
+                  <div class="mt-2 text-center">${layoverText}</div>
+                </div>
+
+                <!-- ปลายทาง -->
+                <div class="flex flex-col text-right min-w-[80px]">
+                  <span class="text-3xl font-bold text-[#001334] whitespace-nowrap">${formatTime(item.details.arrivalTime)}</span>
+                  <span class="font-bold text-sm text-[#001334] whitespace-nowrap">${item.details.destination || 'โตเกียว (NRT)'}</span>
+                  <span class="text-[11px] text-gray-400 whitespace-nowrap">${getAirpt(item.details.destination)} • ${formatDate(item.details.arrivalTime)}</span>
+                </div>
+              </div>
+              
+              <!-- โซนราคาและปุ่ม (30%) -->
+              <div class="flex flex-col items-end md:pl-8 md:border-l border-[#001334]/10 mt-6 md:mt-0 min-w-[200px] flex-shrink-0">
+                <span class="text-[11px] text-gray-500 font-medium whitespace-nowrap">ราคารวมภาษี/คน</span>
+                <span class="text-3xl font-bold text-[#fe932c] my-1 whitespace-nowrap">${formatPrice(item.totalPrice)}</span>
+                <button onclick="event.stopPropagation(); openDetailsModal('${item.itemId}')" class="bg-[#001334] hover:bg-[#001334]/90 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors flex items-center gap-1 text-sm w-full justify-center mt-2 shadow-sm whitespace-nowrap">
+                  เลือกเที่ยวบิน & เสริม <span class="material-symbols-outlined text-[18px]">expand_more</span>
+                </button>
+              </div>
+            </div>
+          `;
