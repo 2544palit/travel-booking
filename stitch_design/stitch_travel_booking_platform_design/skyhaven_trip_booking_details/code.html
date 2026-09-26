@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html lang="th"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Litrip - สำรวจโลกกว้างอย่างไร้ขีดจำกัด</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;family=Sarabun:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"secondary-fixed-dim":"#bec6e0","secondary-container":"#dae2fd","on-secondary-fixed":"#131b2e","outline-variant":"#bfc7d2","tertiary-fixed":"#ffdbca","on-secondary":"#ffffff","on-secondary-fixed-variant":"#3f465c","surface-container-lowest":"#ffffff","on-primary":"#ffffff","surface-variant":"#d3e4fe","error-container":"#ffdad6","surface-container-high":"#dce9ff","primary":"#006194","on-primary-fixed":"#001d31","inverse-primary":"#93ccff","surface-bright":"#f8f9ff","surface-container-highest":"#d3e4fe","on-tertiary-container":"#fffbff","on-primary-container":"#fdfcff","on-surface":"#0b1c30","surface-tint":"#006398","on-secondary-container":"#5c647a","tertiary-container":"#c05400","on-tertiary":"#ffffff","inverse-on-surface":"#eaf1ff","on-surface-variant":"#3f4850","background":"#f8f9ff","on-primary-fixed-variant":"#004b73","surface-dim":"#cbdbf5","tertiary":"#994100","surface-container":"#e5eeff","on-tertiary-fixed-variant":"#783200","primary-fixed":"#cce5ff","error":"#ba1a1a","on-error":"#ffffff","surface-container-low":"#eff4ff","tertiary-fixed-dim":"#ffb690","primary-container":"#007bb9","secondary":"#565e74","outline":"#707881","inverse-surface":"#213145","on-tertiary-fixed":"#341100","on-background":"#0b1c30","secondary-fixed":"#dae2fd","surface":"#f8f9ff","on-error-container":"#93000a","primary-fixed-dim":"#93ccff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-2xs":"0.25rem","space-2xl":"3rem","gutter-tablet":"1.5rem","space-lg":"1.5rem","space-3xl":"4rem","space-md":"1rem","gutter-desktop":"2rem","gutter-mobile":"1rem","space-xs":"0.5rem","container-max":"1280px","space-xl":"2rem","space-sm":"0.75rem"},"fontFamily":{"body-lg":["Inter","Sarabun","sans-serif"],"display-lg-mobile":["Plus Jakarta Sans","Sarabun","sans-serif"],"headline-md":["Plus Jakarta Sans","Sarabun","sans-serif"],"body-sm":["Inter","Sarabun","sans-serif"],"headline-sm":["Plus Jakarta Sans","Sarabun","sans-serif"],"label-md":["Inter","Sarabun","sans-serif"],"headline-lg":["Plus Jakarta Sans","Sarabun","sans-serif"],"headline-xl":["Plus Jakarta Sans","Sarabun","sans-serif"],"body-md":["Inter","Sarabun","sans-serif"],"headline-lg-mobile":["Plus Jakarta Sans","Sarabun","sans-serif"],"display-lg":["Plus Jakarta Sans","Sarabun","sans-serif"],"headline-xl-mobile":["Plus Jakarta Sans","Sarabun","sans-serif"],"label-lg":["Inter","Sarabun","sans-serif"],"label-sm":["Inter","Sarabun","sans-serif"]},"fontSize":{"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"display-lg-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-md":["22px",{"lineHeight":"28px","letterSpacing":"0","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"20px","fontWeight":"400"}],"headline-sm":["18px",{"lineHeight":"24px","letterSpacing":"0","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"headline-lg":["30px",{"lineHeight":"38px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-xl":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-md":["15px",{"lineHeight":"24px","fontWeight":"400"}],"headline-lg-mobile":["24px",{"lineHeight":"32px","letterSpacing":"0","fontWeight":"600"}],"display-lg":["48px",{"lineHeight":"56px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-xl-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"700"}],"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"700"}]}}}}</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 inset-x-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 max-w-container-max mx-auto px-gutter-mobile md:px-gutter-tablet lg:px-gutter-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-xl"><a class="flex items-center gap-space-sm group" data-path="search-and-explore" href="#"><img alt="โลโก้ Litrip" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UXmZsvBeiDNAiKI4Cpg2KFR15Dh1izjDdUIm-1En7aJCfLZvbh8AbsVf9E0qcvnTZHVYqq0lzwhZ0cdAG4415PeOXKmS3cEfwwR3sUMEcJ32dRmpTp0xHhEnZtSazOkyn3s-ea5JxmbPh4EYtGteSWhMHZO1uLhxFrK28IVFomVbY_5XpK9cNgozO6N6Gl3d_FJWdtDYYb2qctzIUcZwHdfpBn0EuO0iXVpw4u9EAcIUxCw0xQdSK7P5w"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary group-hover:text-primary-container transition-colors">Litrip</span><span class="font-label-sm text-label-sm text-on-surface-variant">สำรวจโลกกว้าง</span></div></a><nav class="hidden xl:flex items-center gap-space-xs p-space-2xs bg-surface-container-low rounded-xl" data-active-classes="bg-secondary-container text-on-secondary-container font-label-lg rounded-lg"><a class="px-space-md py-space-xs rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="search-and-explore" href="#">ค้นหาและสำรวจ</a><a class="px-space-md py-space-xs rounded-lg font-label-lg text-label-lg bg-secondary-container text-on-secondary-container transition-all" data-path="my-trips-and-cart" href="#">ทริปและตะกร้าของฉัน</a><a class="px-space-md py-space-xs rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="payment-and-checkout" href="#">ชำระเงิน</a><a class="px-space-md py-space-xs rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="my-bookings" href="#">การจองของฉัน</a></nav></div><div class="flex items-center gap-space-md"><div class="hidden sm:flex items-center gap-space-xs bg-surface-container-low px-space-sm py-space-2xs rounded-lg"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">สกุลเงิน</span><select class="bg-transparent font-label-md text-label-md text-on-surface focus:outline-none cursor-pointer"><option value="USD">USD ($)</option><option value="THB">THB (฿)</option></select></div><div class="hidden lg:flex items-center gap-space-xs px-space-sm py-space-2xs rounded-full bg-secondary-fixed text-on-secondary-fixed"><span class="material-symbols-outlined text-[16px] text-tertiary">star</span><span class="font-label-sm text-label-sm font-bold">2,450 แต้ม</span><span class="font-label-sm text-label-sm text-on-secondary-fixed-variant">• สมาชิก Gold</span></div><button aria-label="การแจ้งเตือน" class="relative p-space-xs rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-tertiary-container"></span></button><div class="flex items-center gap-space-sm pl-space-xs border-l border-outline-variant/30"><img alt="โปรไฟล์" class="w-8 h-8 rounded-full object-cover ring-1 ring-outline-variant/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrlbj4C_BufgVZPBhYLQOse47_b-0oRn4TEHRHQsDULsAidoxsWTTn5Q8bctBM9sPh9OnIFrToW6Tj2BFkZ6MLkwWDarM3fWxDx-zup2QmMLAT2fnBVC-x6vnBawbJCEdMZRSvP961V_qVHUXpmf16NFAVI5N06KMWf96Ed6C9J4ZRhl0LO1hn4DRxTsfUPoaMCLHPxjcYBJFczChjRT6ptT_zs9_08LhAxoQqbj2MrSs5NJjrk0U_pw"/><div class="hidden md:flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface leading-tight">Alex Chen</span><span class="font-label-sm text-label-sm text-primary leading-tight">สมาชิก Gold</span></div></div></div></div></header><main class="w-full pt-20 bg-background min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full bg-surface-container-low py-space-xl">
+<div class="max-w-container-max mx-auto px-gutter-mobile md:px-gutter-tablet lg:px-gutter-desktop flex flex-col gap-space-lg">
+<div class="flex flex-wrap items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm text-on-surface-variant font-label-md text-label-md">
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+<span>ทริปทั้งหมด</span>
+</a>
+<span>/</span>
+<span class="text-on-surface">ทริป #TRIP-884920</span>
+<span class="px-space-xs py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-label-sm font-label-sm">เอนทิตีรวม (Aggregate Entity)</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">data_object</span>
+<span>รูปแบบ: Domain Aggregate Root &amp; State Context</span>
+</div>
+</div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg bg-surface-container-lowest p-space-lg md:p-space-xl rounded-xl shadow-sm">
+<div class="flex flex-col gap-space-xs">
+<div class="flex flex-wrap items-center gap-space-sm">
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight" id="trip-title-display">วันหยุดพักผ่อนกรุงเทพฯ ฤดูใบไม้ร่วง 2025</h1>
+<button class="p-space-2xs rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" id="edit-title-btn" title="แก้ไขชื่อทริป">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<div class="hidden items-center gap-space-xs" id="edit-title-container">
+<input class="bg-surface-container-low px-space-sm py-space-2xs rounded-lg font-headline-sm text-headline-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary" id="title-input-field" type="text" value="วันหยุดพักผ่อนกรุงเทพฯ ฤดูใบไม้ร่วง 2025"/>
+<button class="px-space-sm py-space-2xs rounded-lg bg-primary text-on-primary font-label-sm text-label-sm" id="save-title-btn">บันทึก</button>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-x-space-md gap-y-space-xs text-body-sm font-body-sm text-on-surface-variant">
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[18px] text-primary">tag</span>
+<span class="font-medium text-on-surface">#TRIP-884920</span>
+</div>
+<span>•</span>
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[18px] text-primary">account_circle</span>
+<span>ผู้เดินทาง: <strong class="text-on-surface font-medium">Alex Chen</strong></span>
+<span class="px-space-xs py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-label-sm font-label-sm">ระดับ Gold</span>
+</div>
+<span>•</span>
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[18px] text-primary">event</span>
+<span>15 ต.ค. - 18 ต.ค. 2025 (4 วัน)</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs lg:items-end">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-label-lg text-label-lg text-tertiary">สถานะการจอง: รอดำเนินการ</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(รอชำระเงิน)</span>
+</div>
+<div class="flex items-center gap-space-xs pt-space-xs">
+<div class="flex items-center gap-1.5">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold">สร้างแล้ว</span>
+</div>
+<div class="w-8 h-0.5 bg-primary"></div>
+<div class="flex items-center gap-1.5">
+<div class="w-6 h-6 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center font-label-sm text-label-sm">2</div>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">รอดำเนินการ</span>
+</div>
+<div class="w-8 h-0.5 bg-surface-container-highest"></div>
+<div class="flex items-center gap-1.5">
+<div class="w-6 h-6 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm">3</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ยืนยันแล้ว</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-gutter-mobile md:px-gutter-tablet lg:px-gutter-desktop py-space-xl w-full">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl">
+<div class="lg:col-span-8 flex flex-col gap-space-lg">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">รายการในแผนการเดินทาง</h2>
+<span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface text-label-md font-label-md">2 รายการในทริป</span>
+</div>
+<div class="hidden sm:flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">swap_horiz</span>
+<span>การประมวลผลราคาแบบพหุสัณฐาน (Polymorphic)</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md transition-all hover:shadow-md">
+<div class="flex flex-wrap items-start justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-primary-fixed text-on-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">flight_takeoff</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">เที่ยวบิน SkyWings Express</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">SK-842</span>
+<span class="px-space-xs py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">FlightItemImpl</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">แอร์บัส A350-900 • ชั้นประหยัดพรีเมียม (Economy Flex)</span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-headline-md text-headline-md text-primary">$248.50</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">รวมภาษีแล้ว</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md bg-surface-container-low p-space-md rounded-lg">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">ออกเดินทาง</span>
+<span class="font-headline-sm text-headline-sm text-on-surface mt-0.5">08:30</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">สิงคโปร์ (SIN)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">ชางงี เทอร์มินอล 3</span>
+</div>
+<div class="flex flex-col items-center justify-center py-space-xs md:py-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant">1 ชม. 35 นาที • บินตรง</span>
+<div class="w-full flex items-center gap-2 my-1">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="flex-1 h-0.5 bg-outline-variant/40 relative flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-primary rotate-90 bg-surface-container-low px-1">flight</span>
+</div>
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+</div>
+<span class="font-label-sm text-label-sm text-primary">วันพุธที่ 15 ต.ค.</span>
+</div>
+<div class="flex flex-col md:text-right">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">ถึงที่หมาย</span>
+<span class="font-headline-sm text-headline-sm text-on-surface mt-0.5">10:05</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">กรุงเทพฯ (BKK)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">ท่าอากาศยานสุวรรณภูมิ</span>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-space-md text-body-sm font-body-sm text-on-surface-variant pt-space-2xs">
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[18px] text-primary">airline_seat_recline_extra</span>
+<span>ที่นั่งที่เลือก: <strong class="text-on-surface font-medium">14A (ริมหน้าต่าง)</strong></span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[18px] text-primary">luggage</span>
+<span>โหลดสัมภาระฟรี 20 กก.</span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[18px] text-primary">wifi</span>
+<span>ฟรี Wi-Fi ความเร็วสูงบนเที่ยวบิน</span>
+</div>
+</div>
+<div class="bg-surface-container p-space-sm rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-xs text-body-sm font-body-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-secondary">calculate</span>
+<span class="font-medium text-on-surface">การคำนวณภาษีตามกลยุทธ์ (Strategy):</span>
+<span class="text-on-surface-variant">ค่าโดยสารพื้นฐาน $220.00 + ภาษีเชื้อเพลิงและค่าธรรมเนียมความปลอดภัยการบินคงที่</span>
+</div>
+<div class="flex items-center gap-space-sm text-right self-end sm:self-auto">
+<span class="text-on-surface-variant font-label-md text-label-md">calcTax():</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">$28.50</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md transition-all hover:shadow-md">
+<div class="flex flex-wrap items-start justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">hotel</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">โรงแรมแกรนด์ เซนเตอร์ พอยต์ เทอร์มินอล 21</span>
+<span class="px-space-xs py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">HotelItemImpl</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">สุขุมวิท, วัฒนา, กรุงเทพมหานคร, ประเทศไทย</span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-headline-md text-headline-md text-primary">$445.50</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">3 คืน, รวมภาษีทั้งหมดแล้ว</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-md bg-surface-container-low p-space-md rounded-lg items-center">
+<div class="md:col-span-4 h-32 rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A modern luxury deluxe hotel room interior with a plush king-sized bed, crisp white linens, contemporary wooden headboard, floor-to-ceiling windows showing the vibrant Bangkok city skyline at dusk with warm golden and cool blue lighting, ambient cozy travel hotel photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB16rPSGg0DdL8JzFPhnLNHfXVfnkQM1DBIUXs_QFspyPI-wf4-z5IplRA2JCCQpyVvkQm7jpFprk5Me6najQIOBLmF2sgiuue0BOImUQy7q5KeL76n3SBgNPtto8M3ExJO1tIMz02IyLVYQr7sDXAzqLVwhUZiK44gXLT-I3VJFMTmkOHbVGcaWM14v2VVjMIaz6T0TBRH2n7XzdgIh0uc8Z6_Qwxnk5SxJarIehjPfGYF8SlDGPkeDQ"/>
+<span class="absolute bottom-2 left-2 px-space-xs py-0.5 bg-on-surface/80 backdrop-blur text-surface-bright rounded text-label-sm font-label-sm">วิวเมือง</span>
+</div>
+<div class="md:col-span-8 flex flex-col justify-between h-full gap-space-xs">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">ห้องดีลักซ์ สกายไลน์ เตียงคิงไซส์</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">เช็คอิน: 15 ต.ค. 2025 (15:00) • เช็คเอาท์: 18 ต.ค. 2025 (12:00)</span>
+</div>
+<div class="flex flex-wrap items-center gap-x-space-md gap-y-space-2xs text-body-sm font-body-sm text-on-surface-variant mt-space-xs">
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[18px] text-primary">person</span>
+<span>ผู้ใหญ่ 1 ท่าน</span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[18px] text-primary">restaurant</span>
+<span>รวมบุฟเฟต์อาหารเช้าทุกวัน</span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[18px] text-primary">pool</span>
+<span>สิทธิ์ใช้สระว่ายน้ำอินฟินิตี้และสปา</span>
+</div>
+</div>
+<div class="text-label-sm font-label-sm text-tertiary flex items-center gap-1 mt-space-2xs">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>ทางเชื่อมสกายวอล์คตรงสู่สถานีรถไฟฟ้า BTS อโศก</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container p-space-sm rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-xs text-body-sm font-body-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-secondary">percent</span>
+<span class="font-medium text-on-surface">การคำนวณภาษีตามอัตราร้อยละ:</span>
+<span class="text-on-surface-variant">ราคาห้องพักพื้นฐาน ($135.00 × 3 คืน = $405.00) + ภาษีมูลค่าเพิ่มโรงแรม 10% และค่าธรรมเนียมเทศบาล</span>
+</div>
+<div class="flex items-center gap-space-sm text-right self-end sm:self-auto">
+<span class="text-on-surface-variant font-label-md text-label-md">calcTax():</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">$40.50</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-lg rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">add_circle</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">เพิ่มบริการเสริมในทริปนี้</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">เพิ่มรถรับ-ส่งสนามบินส่วนตัว หรือรถเช่ารวมเข้ากับแผนการเดินทางเดียวกันได้ทันที</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-space-xs rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-lg text-label-lg shadow-sm transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[18px]">directions_car</span>
+<span>+ รับ-ส่งสนามบิน</span>
+</button>
+<button class="px-space-md py-space-xs rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-lg text-label-lg shadow-sm transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[18px]">tour</span>
+<span>+ เดย์ทัวร์</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center gap-space-xs text-primary font-headline-sm text-headline-sm">
+<span class="material-symbols-outlined">architecture</span>
+<span>สถาปัตยกรรมโดเมนและจุดเด่นเชิงวัตถุ (Domain Architecture)</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            ในมุมมองนี้ คลาส <strong class="text-on-surface font-medium">Trip</strong> ทำหน้าที่เป็น <em>Aggregate Root</em> ที่คอยบริหารจัดการออบเจกต์ <strong class="text-on-surface font-medium">BookingItem</strong> ภายในกลุ่ม โดยการคำนวณภาษีทำงานแบบพหุสัณฐาน (Polymorphic Delegation): เมื่อเรียก <code class="bg-surface-container px-1 py-0.5 rounded text-primary font-mono text-label-sm">FlightBookingItem.calculateTax()</code> ระบบจะประมวลผลภาษีสนามบินและค่าธรรมเนียมความปลอดภัยแบบอัตราคงที่ ส่วนการเรียก <code class="bg-surface-container px-1 py-0.5 rounded text-primary font-mono text-label-sm">HotelBookingItem.calculateTax()</code> จะคำนวณตามสัดส่วนร้อยละของภาษีมูลค่าเพิ่มและภาษีท้องถิ่น
+          </p>
+</div>
+</div>
+<div class="lg:col-span-4 flex flex-col gap-space-lg">
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-md flex flex-col gap-space-md sticky top-24">
+<div class="flex items-center justify-between pb-space-xs border-b border-surface-container">
+<h3 class="font-headline-md text-headline-md text-on-surface">สรุปยอดชำระเงิน</h3>
+<span class="px-space-xs py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">USD ($)</span>
+</div>
+<div class="flex flex-col gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex justify-between items-center">
+<span>ยอดรวมย่อย (ค่าตั๋วบิน + โรงแรม)</span>
+<span class="font-medium text-on-surface">$625.00</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-1">
+<span>ภาษีและค่าธรรมเนียมรวม</span>
+<span class="material-symbols-outlined text-[16px] text-outline cursor-help" title="ภาษีความปลอดภัยการบิน + ภาษีโรงแรมกรุงเทพฯ">info</span>
+</div>
+<span class="font-medium text-on-surface">$69.00</span>
+</div>
+<div class="flex justify-between items-center text-primary font-medium" id="promo-discount-row">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">local_offer</span>
+<span>โค้ดส่วนลด (AUTUMN10)</span>
+</div>
+<span>-$62.50</span>
+</div>
+<div class="hidden justify-between items-center text-tertiary font-medium" id="loyalty-discount-row">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">star</span>
+<span>แต้มสะสมสมาชิก (500 แต้ม)</span>
+</div>
+<span>-$5.00</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-space-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-medium" for="promo-input">คูปอง / โค้ดส่วนลด</label>
+<div class="flex items-center gap-space-xs">
+<div class="relative flex-1">
+<input class="w-full bg-surface-container-lowest text-on-surface font-label-md text-label-md px-space-sm py-2 rounded-lg border-0 focus:ring-2 focus:ring-primary uppercase tracking-wider font-semibold" id="promo-input" type="text" value="AUTUMN10"/>
+<span class="absolute right-2 top-2 material-symbols-outlined text-[18px] text-primary">check_circle</span>
+</div>
+<button class="px-space-sm py-2 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-md text-label-md transition-colors" id="apply-promo-btn">ใช้งาน</button>
+</div>
+<span class="text-label-sm font-label-sm text-primary flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">check</span> ใช้ได้: รับส่วนลด 10% (-$62.50)
+            </span>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-lg flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-medium">แลกแต้มสะสม Gold</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">คงเหลือ: 2,450 แต้ม ($24.50)</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" id="points-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="pt-space-xs border-t border-surface-container flex flex-col gap-space-2xs">
+<div class="flex justify-between items-baseline">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">ยอดชำระสุทธิ</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">รวมภาษีและส่วนลดทั้งหมดแล้ว</span>
+</div>
+<div class="text-right">
+<span class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight" id="final-total-display">$626.50</span>
+</div>
+</div>
+</div>
+<button class="w-full py-space-sm px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-bold flex items-center justify-center gap-space-xs shadow-md transition-all hover:translate-y-[-1px]" id="checkout-action-btn" type="button">
+<span>ดำเนินการชำระเงิน</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<div class="flex flex-col gap-space-2xs text-label-sm font-label-sm text-on-surface-variant pt-space-xs">
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[16px] text-primary">lock</span>
+<span>การชำระเงินปลอดภัยด้วยการเข้ารหัส 256 บิต</span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">update</span>
+<span>ยกเลิกโรงแรมฟรีล่วงหน้า 24 ชม. ก่อนเช็คอิน</span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_forward</span>
+<span>อัปเดตและยืนยันสถานะทุกรายการพร้อมกันหลังชำระเงิน</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-xl flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">card_membership</span>
+</div>
+<div class="flex flex-col text-body-sm font-body-sm">
+<span class="font-medium text-on-surface">Alex Chen (สมาชิก Gold)</span>
+<span class="text-on-surface-variant">การจองทริปนี้จะได้รับ <strong class="text-primary font-medium">+626 LitPoints</strong></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function initAggregateRootView() {
+    const editBtn = document.getElementById('edit-title-btn');
+    const saveBtn = document.getElementById('save-title-btn');
+    const titleDisplay = document.getElementById('trip-title-display');
+    const editContainer = document.getElementById('edit-title-container');
+    const titleInput = document.getElementById('title-input-field');
+
+    if (editBtn && saveBtn && titleDisplay && editContainer && titleInput) {
+      editBtn.addEventListener('click', () => {
+        titleDisplay.classList.add('hidden');
+        editBtn.classList.add('hidden');
+        editContainer.classList.remove('hidden');
+        editContainer.classList.add('flex');
+        titleInput.focus();
+      });
+
+      const commitTitle = () => {
+        const val = titleInput.value.trim();
+        if (val.length > 0) {
+          titleDisplay.textContent = val;
+        }
+        editContainer.classList.remove('flex');
+        editContainer.classList.add('hidden');
+        titleDisplay.classList.remove('hidden');
+        editBtn.classList.remove('hidden');
+      };
+
+      saveBtn.addEventListener('click', commitTitle);
+      titleInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') commitTitle();
+      });
+    }
+
+    const pointsToggle = document.getElementById('points-toggle');
+    const loyaltyRow = document.getElementById('loyalty-discount-row');
+    const totalDisplay = document.getElementById('final-total-display');
+
+    if (pointsToggle && loyaltyRow && totalDisplay) {
+      pointsToggle.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          loyaltyRow.classList.remove('hidden');
+          loyaltyRow.classList.add('flex');
+          totalDisplay.textContent = '$621.50';
+        } else {
+          loyaltyRow.classList.remove('flex');
+          loyaltyRow.classList.add('hidden');
+          totalDisplay.textContent = '$626.50';
+        }
+      });
+    }
+
+    const checkoutBtn = document.getElementById('checkout-action-btn');
+    if (checkoutBtn) {
+      checkoutBtn.addEventListener('click', () => {
+        const paymentLink = document.querySelector('nav a[data-path="payment-and-checkout"]');
+        if (paymentLink) {
+          paymentLink.click();
+        }
+      });
+    }
+  })();
+</script></main><footer class="w-full bg-surface-container-low mt-space-3xl"><div class="max-w-container-max mx-auto px-gutter-mobile md:px-gutter-tablet lg:px-gutter-desktop py-space-2xl"><div class="grid grid-cols-1 md:grid-cols-4 gap-space-xl pb-space-xl border-b border-outline-variant/20"><div class="flex flex-col gap-space-xs"><div class="flex items-center gap-space-xs text-primary"><span class="material-symbols-outlined">verified_user</span><span class="font-headline-sm text-headline-sm">การรับประกันจาก Litrip</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">การันตีราคาโปร่งใส ตั๋วออกทันที และความคุ้มครองครบวงจรในทุกการเดินทางของคุณ</p></div><div class="flex flex-col gap-space-xs"><div class="flex items-center gap-space-xs text-primary"><span class="material-symbols-outlined">support_agent</span><span class="font-headline-sm text-headline-sm">บริการช่วยเหลือ 24 ชม.</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">เจ้าหน้าที่ดูแลตลอดเวลา สำหรับทุกจุดหมายปลายทาง การเปลี่ยนแปลงเที่ยวบิน และที่พัก</p></div><div class="flex flex-col gap-space-xs"><div class="flex items-center gap-space-xs text-primary"><span class="material-symbols-outlined">lock</span><span class="font-headline-sm text-headline-sm">ระบบธุรกรรมปลอดภัย</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">มาตรฐาน PCI-DSS ระดับ 1 พร้อมการเข้ารหัสขั้นสูง รองรับหลากหลายสกุลเงินและการแลกแต้ม</p></div><div class="flex flex-col gap-space-xs"><div class="flex items-center gap-space-xs text-primary"><span class="material-symbols-outlined">loyalty</span><span class="font-headline-sm text-headline-sm">สิทธิประโยชน์สมาชิก</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">สะสมแต้มจากเที่ยวบินและโรงแรม แลกรางวัลได้ยืดหยุ่น พร้อมสิทธิพิเศษจากพาร์ทเนอร์</p></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md text-on-surface-variant font-body-sm text-body-sm"><div>© 2025 Litrip Travel Global Inc. สงวนลิขสิทธิ์ทุกประการ</div><div class="flex items-center gap-space-lg font-label-md text-label-md"><span>นโยบายความเป็นส่วนตัว</span><span>ข้อกำหนดการให้บริการ</span><span>พิกัดอัตราค่าโดยสาร</span><span class="text-outline">สถาปัตยกรรม: Micro-Frontend Shell v4.12</span></div></div></div></footer></body></html>

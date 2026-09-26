@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>รายละเอียดทริป - Litrip</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#006194',
+            secondary: '#565e74',
+            tertiary: '#994100',
+            background: '#f8f9ff',
+            surface: '#ffffff',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; }
+    h1, h2, h3, h4, h5, h6, .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+  <script src="/js/app.js"></script>
+  <script src="/js/api.js"></script>
+</head>
+<body class="text-secondary pt-20 pb-12">
+
+  <!-- Header -->
+  <header class="fixed w-full top-0 z-50 bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('landing')">
+        <span class="material-symbols-outlined text-primary text-3xl">flight_takeoff</span>
+        <span class="font-display font-bold text-xl text-primary">Litrip</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="profile-area items-center gap-3 cursor-pointer hidden md:flex" onclick="navigateTo('dashboard')">
+          <div class="text-right">
+            <div class="profile-name text-sm font-bold text-primary">User</div>
+          </div>
+          <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined text-sm">person</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4">
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-gray-500 mb-6 flex items-center gap-2">
+      <a href="#" onclick="navigateTo('search')" class="hover:text-primary">ค้นหา</a>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <span class="text-gray-800 font-medium">รายละเอียดทริป</span>
+    </nav>
+
+    <!-- Feature 3: Stepper -->
+    <div class="flex items-center justify-center mb-8 overflow-x-auto py-1">
+      <div class="flex items-center text-xs sm:text-sm font-medium gap-0 min-w-max">
+        <!-- Step 1: Done -->
+        <div class="flex items-center text-green-600">
+          <span class="w-7 h-7 rounded-full bg-green-100 border-2 border-green-400 flex items-center justify-center mr-1.5 flex-shrink-0">
+            <span class="material-symbols-outlined text-[15px]">check</span>
+          </span>
+          <span class="hidden sm:inline">เลือกรายการ</span>
+        </div>
+        <div class="w-8 sm:w-14 h-0.5 bg-green-300 mx-2 flex-shrink-0"></div>
+        <!-- Step 2: Active -->
+        <div class="flex items-center text-primary">
+          <span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center mr-1.5 text-xs font-bold flex-shrink-0">2</span>
+          <span class="font-bold">ตรวจสอบตะกร้า</span>
+        </div>
+        <div class="w-8 sm:w-14 h-0.5 bg-gray-200 mx-2 flex-shrink-0"></div>
+        <!-- Step 3 -->
+        <div class="flex items-center text-gray-400">
+          <span class="w-7 h-7 rounded-full bg-gray-100 border-2 border-gray-300 flex items-center justify-center mr-1.5 text-xs font-bold flex-shrink-0">3</span>
+          <span class="hidden sm:inline">ชำระเงิน</span>
+        </div>
+        <div class="w-8 sm:w-14 h-0.5 bg-gray-200 mx-2 flex-shrink-0"></div>
+        <!-- Step 4 -->
+        <div class="flex items-center text-gray-400">
+          <span class="w-7 h-7 rounded-full bg-gray-100 border-2 border-gray-300 flex items-center justify-center mr-1.5 text-xs font-bold flex-shrink-0">4</span>
+          <span class="hidden sm:inline">สำเร็จ</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+      
+      <!-- Main Content -->
+      <div class="flex-1 space-y-6">
+        
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h1 class="text-2xl font-bold font-display text-gray-800 mb-1">ตะกร้าการเดินทางของคุณ</h1>
+              <p class="text-sm text-gray-500">ตรวจสอบรายการที่เลือกก่อนดำเนินการชำระเงิน</p>
+            </div>
+            <button onclick="navigateTo('search')" class="text-primary hover:underline text-sm font-medium">+ เพิ่มรายการ</button>
+          </div>
+
+          <div id="cart-items-container" class="space-y-4">
+            <!-- Items injected by JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sidebar Summary -->
+      <div class="w-full lg:w-80">
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 sticky top-24">
+          <h3 class="font-bold text-lg text-gray-800 mb-4 font-display">สรุปยอดชำระ</h3>
+          
+          <div class="space-y-3 text-sm mb-6 border-b border-gray-100 pb-4">
+            <div class="flex justify-between">
+              <span class="text-gray-600">ยอดรวม (<span id="summary-count">0</span> รายการ)</span>
+              <span class="font-medium" id="summary-subtotal">฿0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">ภาษีและค่าธรรมเนียม</span>
+              <span class="font-medium" id="summary-tax">฿0</span>
+            </div>
+            <div class="flex justify-between text-green-600 hidden" id="summary-discount-row">
+              <span>ส่วนลดโปรโมชั่น</span>
+              <span class="font-medium" id="summary-discount">-฿0</span>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-end mb-6">
+            <span class="font-bold text-gray-800">ยอดสุทธิ</span>
+            <span class="text-2xl font-bold text-tertiary font-display" id="summary-total">฿0</span>
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-xs font-medium text-gray-500 mb-1">โค้ดส่วนลด</label>
+            <div class="flex gap-2">
+              <input type="text" id="promo-code" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary uppercase" placeholder="ใส่โค้ดที่นี่">
+              <button onclick="applyPromoLocal()" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">ใช้โค้ด</button>
+            </div>
+            <p id="promo-msg" class="text-xs mt-1 hidden"></p>
+          </div>
+
+          <button id="checkout-btn" onclick="proceedToCheckout()" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-lg shadow-lg transition flex items-center justify-center gap-2">
+            ดำเนินการชำระเงิน <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+          </button>
+          
+          <p class="text-xs text-center text-gray-400 mt-4">รวมภาษีมูลค่าเพิ่ม 7% เรียบร้อยแล้ว</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let discount = 0;
+    const TAX_RATE = 0.07;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if(!isLoggedIn()){ navigateTo('login'); return; }
+      loadCartItems();
+    });
+
+    window.addEventListener('pageshow', () => {
+      const btn = document.getElementById('checkout-btn');
+      if (btn) {
+        btn.innerHTML = `ดำเนินการชำระเงิน <span class="material-symbols-outlined text-[20px]">arrow_forward</span>`;
+        btn.disabled = false;
+        btn.classList.remove('opacity-75', 'cursor-not-allowed');
+      }
+    });
+
+    function loadCartItems() {
+      const cart = getCart();
+      const container = document.getElementById('cart-items-container');
+      
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10">
+            <span class="material-symbols-outlined text-4xl text-gray-300 mb-2">shopping_cart</span>
+            <p class="text-gray-500 mb-4">ตะกร้าของคุณว่างเปล่า</p>
+            <button onclick="navigateTo('search')" class="bg-primary text-white px-6 py-2 rounded-lg">ค้นหาทริป</button>
+          </div>
+        `;
+        updateSummary();
+        return;
+      }
+
+      container.innerHTML = '';
+      
+      const normalItems = [];
+      const packages = {};
+      
+      cart.forEach(item => {
+        if (item.details && item.details.isPackage && item.details.packageId) {
+          if (!packages[item.details.packageId]) packages[item.details.packageId] = [];
+          packages[item.details.packageId].push(item);
+        } else {
+          normalItems.push(item);
+        }
+      });
+      
+      // Render normal items
+      normalItems.forEach(item => {
+        const isFlight = item.itemType === 'flight';
+        const icon = isFlight ? 'flight' : 'hotel';
+        const title = isFlight ? item.details.airline : item.details.hotelName;
+        const sub = isFlight ? `${item.details.origin} - ${item.details.destination} (${item.details.flightNo})` : item.details.roomType;
+        
+        container.innerHTML += `
+          <div class="flex flex-col sm:flex-row gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50 relative group">
+            <div class="w-12 h-12 bg-white rounded-lg border border-gray-200 flex items-center justify-center text-primary flex-shrink-0">
+              <span class="material-symbols-outlined">${icon}</span>
+            </div>
+            <div class="flex-1">
+              <div class="flex justify-between items-start">
+                <div>
+                  <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">${item.itemType}</span>
+                  <h4 class="font-bold text-gray-800">${title}</h4>
+                  <p class="text-sm text-gray-500">${sub}</p>
+                </div>
+                <div class="text-right">
+                  <p class="font-bold text-tertiary">${formatPrice(item.totalPrice)}</p>
+                  <p class="text-xs text-gray-400">จำนวน: ${item.quantity}</p>
+                </div>
+              </div>
+            </div>
+            <button onclick="removeItem('${item.itemId}')" class="absolute top-2 right-2 sm:relative sm:top-0 sm:right-0 text-red-400 hover:text-red-600 p-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition">
+              <span class="material-symbols-outlined text-xl">delete</span>
+            </button>
+          </div>
+        `;
+      });
+      
+      // Render package items
+      Object.keys(packages).forEach(pkgId => {
+        const pkgItems = packages[pkgId];
+        let pkgTotalPrice = 0;
+        let flightsHtml = '';
+        let hotelHtml = '';
+        let itemIds = [];
+        
+        pkgItems.forEach(item => {
+          pkgTotalPrice += item.totalPrice;
+          itemIds.push(item.itemId);
+          if (item.itemType === 'flight') {
+            flightsHtml += `<div class="text-sm text-gray-600 flex items-center gap-1 mb-1"><span class="material-symbols-outlined text-[14px]">flight_takeoff</span> ${item.details.airline} ${item.details.origin}-${item.details.destination} (x${item.quantity})</div>`;
+          } else {
+            hotelHtml += `<div class="text-sm text-gray-600 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">bed</span> ${item.details.hotelName} (${item.details.nights} คืน)</div>`;
+          }
+        });
+        
+        container.innerHTML += `
+          <div class="flex flex-col sm:flex-row gap-4 p-4 border border-orange-200 rounded-lg bg-orange-50 relative group">
+            <div class="w-12 h-12 bg-white rounded-lg border border-orange-200 flex items-center justify-center text-orange-500 flex-shrink-0 shadow-sm">
+              <span class="material-symbols-outlined">local_offer</span>
+            </div>
+            <div class="flex-1">
+              <div class="flex flex-col sm:flex-row justify-between items-start">
+                <div class="mb-2 sm:mb-0">
+                  <span class="text-[10px] font-bold text-white bg-orange-500 px-2 py-0.5 rounded-full uppercase tracking-wider mb-1 inline-block">Litrip Package Deal</span>
+                  <h4 class="font-bold text-gray-800 text-lg">แพ็กเกจเที่ยวบิน + ที่พัก</h4>
+                  <div class="mt-2 bg-white/60 p-2 rounded border border-orange-100">
+                    ${flightsHtml}
+                    ${hotelHtml}
+                  </div>
+                </div>
+                <div class="text-right w-full sm:w-auto flex justify-between sm:block">
+                  <div class="sm:hidden text-sm font-medium text-gray-500 mt-1">ราคารวมแพ็กเกจ</div>
+                  <div>
+                    <p class="text-xs text-orange-600 font-bold mb-1">รวมส่วนลด 15% แล้ว</p>
+                    <p class="font-bold text-tertiary text-xl">${formatPrice(pkgTotalPrice)}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button onclick="removePackage('${itemIds.join(',')}')" class="absolute top-2 right-2 sm:relative sm:top-0 sm:right-0 text-red-400 hover:text-red-600 p-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition" title="ลบแพ็กเกจนี้">
+              <span class="material-symbols-outlined text-xl">delete</span>
+            </button>
+          </div>
+        `;
+      });
+      
+      updateSummary();
+    }
+
+    function removeItem(id) {
+      removeFromCart(id);
+      loadCartItems();
+    }
+
+    function removePackage(idsString) {
+      const ids = idsString.split(',');
+      ids.forEach(id => removeFromCart(id));
+      loadCartItems();
+    }
+
+    function applyPromoLocal() {
+      const code = document.getElementById('promo-code').value.toUpperCase();
+      const msg = document.getElementById('promo-msg');
+      const subtotal = getCartTotal();
+      
+      let discountAmount = 0;
+      if (code === 'LITRIP25') {
+        discountAmount = Math.min(subtotal * 0.25, 5000);
+      } else if (code === 'NEWUSER10') {
+        discountAmount = Math.min(subtotal * 0.10, 2000);
+      } else if (code === 'GOLD50') {
+        discountAmount = Math.min(subtotal * 0.50, 10000);
+      }
+
+      if (discountAmount > 0) {
+        discount = discountAmount;
+        msg.textContent = `ใช้โค้ดส่วนลด ${formatPrice(discountAmount)} สำเร็จ`;
+        msg.className = 'text-xs mt-1 text-green-500 block';
+        updateSummary();
+      } else {
+        discount = 0;
+        msg.textContent = 'โค้ดส่วนลดไม่ถูกต้องหรือหมดอายุ';
+        msg.className = 'text-xs mt-1 text-red-500 block';
+        updateSummary();
+      }
+    }
+
+    function updateSummary() {
+      const cart = getCart();
+      const subtotal = getCartTotal();
+      const tax = subtotal * TAX_RATE; // 7% VAT
+      const total = subtotal + tax - discount;
+
+      document.getElementById('summary-count').textContent = cart.length;
+      document.getElementById('summary-subtotal').textContent = formatPrice(subtotal);
+      
+      const taxEl = document.getElementById('summary-tax');
+      if (taxEl) taxEl.textContent = formatPrice(tax);
+      
+      const discRow = document.getElementById('summary-discount-row');
+      if(discount > 0) {
+        discRow.classList.remove('hidden');
+        document.getElementById('summary-discount').textContent = `-${formatPrice(discount)}`;
+      } else {
+        discRow.classList.add('hidden');
+      }
+      
+      document.getElementById('summary-total').textContent = formatPrice(total > 0 ? total : 0);
+    }
+
+    async function proceedToCheckout() {
+      const cart = getCart();
+      if(cart.length === 0) return;
+      
+      const btn = document.getElementById('checkout-btn');
+      if (btn) {
+        btn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> กำลังเตรียมข้อมูลชำระเงิน...`;
+        btn.disabled = true;
+        btn.classList.add('opacity-75', 'cursor-not-allowed');
+      }
+      
+      try {
+        const user = getUser();
+        const promoCodeInput = document.getElementById('promo-code')?.value?.toUpperCase() || null;
+        
+        // Use batch endpoint to create booking, add all items, and apply promo in 1 network roundtrip!
+        const payload = {
+          travelerId: user.id,
+          travelerEmail: user.email,
+          items: cart,
+          promoCode: discount > 0 ? promoCodeInput : null
+        };
+        
+        const bookingRes = await fetch('/api/bookings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+        
+        if (!bookingRes.success) throw new Error(bookingRes.error || 'Failed to create booking');
+        
+        const bId = bookingRes.data.bookingId;
+        setCurrentBookingId(bId);
+        navigateTo('checkout');
+      } catch(err) {
+        showToast('เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
+        console.error(err);
+        if (btn) {
+          btn.innerHTML = `ดำเนินการชำระเงิน <span class="material-symbols-outlined text-[20px]">arrow_forward</span>`;
+          btn.disabled = false;
+          btn.classList.remove('opacity-75', 'cursor-not-allowed');
+        }
+      }
+    }
+  </script>
+</body>
+</html>

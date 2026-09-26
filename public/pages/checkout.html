@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ชำระเงิน - Litrip</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#006194',
+            secondary: '#565e74',
+            tertiary: '#994100',
+            background: '#f8f9ff',
+            surface: '#ffffff',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; }
+    h1, h2, h3, h4, h5, h6, .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+  <script src="/js/app.js"></script>
+  <script src="/js/api.js"></script>
+</head>
+<body class="text-secondary pt-20 pb-12">
+
+  <header class="fixed w-full top-0 z-50 bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-center relative">
+      <div class="absolute left-4 flex items-center gap-2 cursor-pointer" onclick="navigateTo('landing')">
+        <span class="material-symbols-outlined text-primary text-3xl">flight_takeoff</span>
+        <span class="font-display font-bold text-xl text-primary hidden sm:block">Litrip</span>
+      </div>
+      <div class="text-center">
+        <h2 class="font-bold text-gray-800">ชำระเงินแบบปลอดภัย</h2>
+        <p class="text-xs text-green-600 flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[14px]">lock</span> 256-bit SSL</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-4xl mx-auto px-4">
+    <!-- Feature 3: Stepper (4 Steps) -->
+    <div class="flex items-center justify-center mb-10 overflow-x-auto py-1">
+      <div class="flex items-center text-xs sm:text-sm font-medium gap-0 min-w-max">
+        <!-- Step 1: Done -->
+        <div class="flex items-center text-green-600">
+          <span class="w-7 h-7 rounded-full bg-green-100 border-2 border-green-400 flex items-center justify-center mr-1.5 flex-shrink-0">
+            <span class="material-symbols-outlined text-[15px]">check</span>
+          </span>
+          <span class="hidden sm:inline">เลือกรายการ</span>
+        </div>
+        <div class="w-8 sm:w-12 h-0.5 bg-green-300 mx-2 flex-shrink-0"></div>
+        <!-- Step 2: Done -->
+        <div class="flex items-center text-green-600">
+          <span class="w-7 h-7 rounded-full bg-green-100 border-2 border-green-400 flex items-center justify-center mr-1.5 flex-shrink-0">
+            <span class="material-symbols-outlined text-[15px]">check</span>
+          </span>
+          <span class="hidden sm:inline">ตรวจสอบ</span>
+        </div>
+        <div class="w-8 sm:w-12 h-0.5 bg-green-300 mx-2 flex-shrink-0"></div>
+        <!-- Step 3: Active -->
+        <div class="flex items-center text-primary">
+          <span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center mr-1.5 text-xs font-bold flex-shrink-0">3</span>
+          <span class="font-bold">ชำระเงิน</span>
+        </div>
+        <div class="w-8 sm:w-12 h-0.5 bg-gray-200 mx-2 flex-shrink-0"></div>
+        <!-- Step 4 -->
+        <div class="flex items-center text-gray-400">
+          <span class="w-7 h-7 rounded-full bg-gray-100 border-2 border-gray-300 flex items-center justify-center mr-1.5 flex-shrink-0">
+            <span class="material-symbols-outlined text-[15px]">emoji_events</span>
+          </span>
+          <span class="hidden sm:inline">สำเร็จ</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-8">
+      
+      <!-- Payment Form -->
+      <div class="flex-1 space-y-6">
+        
+        <!-- Traveler Info -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <h3 class="font-bold text-lg text-gray-800 mb-4 font-display flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">person</span> ข้อมูลผู้ติดต่อ
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1">ชื่อ-นามสกุล</label>
+              <input type="text" id="chk-name" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 text-sm" readonly>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1">อีเมล</label>
+              <input type="email" id="chk-email" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 text-sm" readonly>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-medium text-gray-500 mb-1">เบอร์โทรศัพท์</label>
+              <input type="tel" id="chk-phone" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 text-sm" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <h3 class="font-bold text-lg text-gray-800 mb-4 font-display flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">payment</span> วิธีการชำระเงิน
+          </h3>
+          
+          <div class="space-y-4">
+            <!-- Credit Card -->
+            <label class="block border border-primary ring-1 ring-primary rounded-lg p-4 cursor-pointer relative bg-blue-50/50" id="method-card-wrap">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="paymentMethod" value="credit_card" class="text-primary focus:ring-primary w-4 h-4" checked onclick="selectPaymentMethod('card')">
+                  <span class="font-bold text-gray-800">บัตรเครดิต / เดบิต</span>
+                </div>
+                <div class="flex gap-1">
+                  <div class="w-8 h-5 bg-blue-800 rounded flex items-center justify-center text-[10px] text-white font-bold italic">VISA</div>
+                  <div class="w-8 h-5 bg-orange-500 rounded flex items-center justify-center text-[10px] text-white font-bold italic">MC</div>
+                </div>
+              </div>
+              
+              <div id="card-form" class="space-y-4 pl-7">
+                <div>
+                  <label class="block text-xs font-medium text-gray-500 mb-1">หมายเลขบัตร</label>
+                  <input type="text" id="cc-number" placeholder="0000 0000 0000 0000" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary font-mono tracking-widest">
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-500 mb-1">ชื่อบนบัตร</label>
+                  <input type="text" id="cc-name" placeholder="JOHN DOE" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary uppercase">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">วันหมดอายุ</label>
+                    <input type="text" id="cc-exp" placeholder="MM/YY" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">CVV</label>
+                    <input type="password" id="cc-cvv" placeholder="123" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary" maxlength="3">
+                  </div>
+                </div>
+              </div>
+            </label>
+
+            <!-- PromptPay -->
+            <label class="block border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-300 transition" id="method-pp-wrap">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="paymentMethod" value="promptpay" class="text-primary focus:ring-primary w-4 h-4" onclick="selectPaymentMethod('promptpay')">
+                  <span class="font-bold text-gray-800">พร้อมเพย์ (PromptPay)</span>
+                </div>
+                <div class="w-8 h-5 bg-blue-900 rounded flex items-center justify-center text-[10px] text-white font-bold">PP</div>
+              </div>
+              
+              <div id="promptpay-form" class="hidden mt-4 pl-7 flex flex-col items-center border-t border-gray-100 pt-4">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" class="w-40 h-40 border border-gray-200 rounded-lg p-2 mb-2" alt="QR Code">
+                <p class="text-sm text-gray-500 text-center mb-4">สแกน QR Code ด้วยแอปธนาคารใดก็ได้<br>ระบบจะยืนยันการชำระเงินอัตโนมัติ</p>
+                <div class="w-full text-left mt-2">
+                  <label class="block text-xs font-medium text-gray-500 mb-1">เบอร์โทรศัพท์ (ทดสอบ PromptPay)</label>
+                  <input type="text" id="pp-phone" placeholder="0812345678" value="0812345678" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary">
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Order Summary -->
+      <div class="w-full md:w-80">
+        <div class="bg-gray-50 rounded-xl shadow-sm p-6 border border-gray-200 sticky top-24">
+          <h3 class="font-bold text-lg text-gray-800 mb-4 font-display">สรุปคำสั่งซื้อ</h3>
+          
+          <div class="flex justify-between items-center text-sm mb-2 text-gray-600">
+            <span>รหัสการจอง:</span>
+            <span class="font-mono text-xs font-medium bg-gray-200 px-2 py-0.5 rounded" id="disp-booking-id">--</span>
+          </div>
+
+          <div class="space-y-2 text-sm text-gray-600 border-t border-b border-gray-100 py-4 mb-4" id="price-breakdown-container">
+            <div class="flex justify-between">
+              <span>ราคารวม <span id="breakdown-items-count" class="text-xs text-gray-400"></span></span>
+              <span id="breakdown-subtotal">฿0</span>
+            </div>
+            <div class="flex justify-between text-xs text-gray-400">
+              <span>ภาษีและค่าธรรมเนียม (VAT 7%)</span>
+              <span id="breakdown-tax">฿0</span>
+            </div>
+            <div id="promo-discount-row" class="hidden flex justify-between text-sm text-green-600 font-medium">
+              <span>ส่วนลดโปรโมชั่น (<span id="disp-promo-code"></span>)</span>
+              <span id="breakdown-promo-discount">-฿0</span>
+            </div>
+          </div>
+
+          <div class="mt-4 mb-6">
+            
+            <div id="points-redemption-container" class="hidden mb-4 p-4 bg-orange-50 border border-orange-100 rounded-lg">
+              <div class="flex justify-between items-center">
+                <div>
+                  <h4 class="font-bold text-orange-600 text-sm flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">loyalty</span> ใช้คะแนน LitPoints</h4>
+                  <p class="text-xs text-orange-500" id="points-avail-text">คุณมี 0 pts (แลกส่วนลดได้ ฿0)</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="use-points-toggle" class="sr-only peer" onchange="togglePointsDiscount()">
+                  <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange-500"></div>
+                </label>
+              </div>
+              <div id="points-discount-row" class="hidden mt-2 pt-2 border-t border-orange-100 flex justify-between text-sm">
+                <span class="text-gray-600">ส่วนลดจากคะแนน</span>
+                <span class="font-bold text-green-600" id="points-discount-amount">-฿0</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-end mb-2">
+              <span class="font-bold text-gray-800">ยอดชำระสุทธิ</span>
+              <span class="text-3xl font-bold text-tertiary font-display" id="checkout-total">฿0</span>
+            </div>
+          </div>
+
+          <button onclick="processPayment()" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-lg shadow-lg transition text-lg flex justify-center items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">lock</span> ยืนยันการชำระเงิน
+          </button>
+          
+          <div class="mt-6 flex items-center justify-center gap-4 opacity-60">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/PCI-DSS-Logo.png" class="h-6 object-contain grayscale" alt="PCI DSS">
+            <div class="text-xs font-bold font-mono">SECURE<br>CHECKOUT</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 3D Secure OTP Modal -->
+  <div id="otp-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden backdrop-blur-sm">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 relative">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold font-display text-gray-800 text-lg flex items-center gap-2">
+          <span class="material-symbols-outlined text-blue-600">verified_user</span> 3D Secure Verification
+        </h3>
+        <button onclick="closeOtpModal()" class="text-gray-400 hover:text-red-500">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="text-sm text-gray-600 mb-6 space-y-2">
+        <p>ระบบได้ส่งรหัส OTP (One-Time Password) ไปยังหมายเลขโทรศัพท์มือถือที่ลงท้ายด้วย <span class="font-bold text-gray-800">XXXX-4321</span></p>
+        <p class="text-xs text-blue-600 bg-blue-50 p-2 rounded">💡 โหมดทดสอบ: กรุณากรอกรหัส <b class="text-blue-800 text-sm">123456</b></p>
+      </div>
+      <div class="flex gap-2 justify-between mb-6" id="otp-inputs">
+        <input type="text" maxlength="1" class="w-10 h-12 text-center text-xl font-bold border border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none otp-input" onkeyup="focusNextOtp(this, 1)">
+        <input type="text" maxlength="1" class="w-10 h-12 text-center text-xl font-bold border border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none otp-input" onkeyup="focusNextOtp(this, 2)">
+        <input type="text" maxlength="1" class="w-10 h-12 text-center text-xl font-bold border border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none otp-input" onkeyup="focusNextOtp(this, 3)">
+        <input type="text" maxlength="1" class="w-10 h-12 text-center text-xl font-bold border border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none otp-input" onkeyup="focusNextOtp(this, 4)">
+        <input type="text" maxlength="1" class="w-10 h-12 text-center text-xl font-bold border border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none otp-input" onkeyup="focusNextOtp(this, 5)">
+        <input type="text" maxlength="1" class="w-10 h-12 text-center text-xl font-bold border border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none otp-input" onkeyup="focusNextOtp(this, 6)">
+      </div>
+      <button onclick="verifyOtpAndPay()" id="btn-verify-otp" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow transition">
+        ยืนยันการชำระเงิน
+      </button>
+    </div>
+  </div>
+
+  <!-- PromptPay Verification Modal -->
+  <div id="qr-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden backdrop-blur-sm">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 relative text-center">
+      <div class="absolute top-4 right-4">
+        <button onclick="closeQrModal()" class="text-gray-400 hover:text-red-500">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" class="w-48 h-48 mx-auto border-4 border-blue-900 rounded-xl p-2 mb-4">
+      <h3 class="font-bold text-gray-800 text-lg mb-1">Litrip PromptPay</h3>
+      <p class="text-3xl font-bold text-tertiary font-display mb-2" id="qr-amount">฿0</p>
+      
+      <div class="bg-gray-100 rounded-lg p-3 mb-6 inline-block">
+        <p class="text-xs text-gray-500 font-medium mb-1">รอการชำระเงิน (Awaiting Payment)</p>
+        <p class="text-xl font-bold text-gray-800 font-mono" id="qr-countdown">05:00</p>
+      </div>
+
+      <div class="flex items-center justify-center gap-2 text-sm text-blue-600 mb-6">
+        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+        ระบบกำลังตรวจสอบยอดเงิน...
+      </div>
+      
+      <button onclick="simulateQrPaymentComplete()" id="btn-sim-qr" class="w-full border-2 border-dashed border-green-500 text-green-600 hover:bg-green-50 font-bold py-2 rounded-lg transition text-sm">
+        [Dev] จำลองโอนเงินสำเร็จจากแอปธนาคาร
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let currentBookingData = null;
+    let maxUsablePoints = 0;
+    let pointsDiscountValue = 0;
+    
+    // Gateway State
+    let cachedPaymentData = null;
+    let qrInterval = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if(!isLoggedIn()){ navigateTo('login'); return; }
+      
+      try {
+        const meRes = await apiGetMe();
+        const user = meRes.data.user;
+        localStorage.setItem('litrip_user', JSON.stringify(user));
+        APP_STATE.user = user;
+      } catch(err) {
+        console.warn('Failed to get fresh user data, using local session');
+      }
+
+      const user = getUser();
+      if(user) {
+        document.getElementById('chk-name').value = user.name || '';
+        document.getElementById('chk-email').value = user.email || '';
+        document.getElementById('chk-phone').value = user.phone || '-';
+
+        if (user.loyaltyPoints > 0) {
+          document.getElementById('points-redemption-container').classList.remove('hidden');
+          document.getElementById('points-avail-text').textContent = `คุณมี ${(user.loyaltyPoints).toLocaleString()} pts (แลกส่วนลดได้ ${formatPrice(Math.floor(user.loyaltyPoints / 10))})`;
+          maxUsablePoints = user.loyaltyPoints;
+        }
+      }
+
+      const bId = getCurrentBookingId();
+      if(!bId) {
+        showToast('ไม่พบข้อมูลการจอง', 'error');
+        setTimeout(() => navigateTo('search'), 1500);
+        return;
+      }
+
+      document.getElementById('disp-booking-id').textContent = bId.substring(0,8).toUpperCase();
+
+      try {
+        const res = await apiGetBooking(bId);
+        currentBookingData = res.data;
+        
+        const state = currentBookingData.state || currentBookingData.stateName || currentBookingData.status;
+        if (state && state.toLowerCase() !== 'pending') {
+          showToast('รายการนี้ได้รับการชำระเงินหรือถูกยกเลิกไปแล้ว', 'error');
+          setTimeout(() => navigateTo('dashboard'), 2000);
+          return;
+        }
+
+        updateCheckoutTotal();
+      } catch(err) {
+        showToast('ไม่สามารถดึงข้อมูลการจองได้', 'error');
+      }
+    });
+
+    function togglePointsDiscount() {
+      const toggle = document.getElementById('use-points-toggle');
+      const row = document.getElementById('points-discount-row');
+      
+      if (toggle.checked) {
+        const maxPtsForPrice = Math.floor(currentBookingData.totalPrice * 10);
+        const ptsToUse = Math.min(maxUsablePoints, maxPtsForPrice);
+        pointsDiscountValue = Math.floor(ptsToUse / 10);
+        
+        document.getElementById('points-discount-amount').textContent = `-${formatPrice(pointsDiscountValue)}`;
+        row.classList.remove('hidden');
+      } else {
+        pointsDiscountValue = 0;
+        row.classList.add('hidden');
+      }
+      updateCheckoutTotal();
+    }
+
+    function updateCheckoutTotal() {
+      if (!currentBookingData) return;
+      
+      const itemCount = currentBookingData.items ? currentBookingData.items.length : getCart().length;
+      document.getElementById('breakdown-items-count').textContent = `(${itemCount} รายการ)`;
+      document.getElementById('breakdown-subtotal').textContent = formatPrice(currentBookingData.subtotal);
+
+      const taxEl = document.getElementById('breakdown-tax');
+      if (taxEl) taxEl.textContent = formatPrice(currentBookingData.tax);
+
+      const promoRow = document.getElementById('promo-discount-row');
+      if (currentBookingData.discount && currentBookingData.discount > 0) {
+        document.getElementById('disp-promo-code').textContent = currentBookingData.promoCode || 'Code';
+        document.getElementById('breakdown-promo-discount').textContent = `-${formatPrice(currentBookingData.discount)}`;
+        promoRow.classList.remove('hidden');
+      } else {
+        promoRow.classList.add('hidden');
+      }
+
+      const total = Math.max(0, currentBookingData.totalPrice - pointsDiscountValue);
+      document.getElementById('checkout-total').textContent = formatPrice(total);
+    }
+
+    function selectPaymentMethod(method) {
+      const cardWrap = document.getElementById('method-card-wrap');
+      const ppWrap = document.getElementById('method-pp-wrap');
+      const cardForm = document.getElementById('card-form');
+      const ppForm = document.getElementById('promptpay-form');
+
+      if(method === 'card') {
+        cardWrap.className = "block border border-primary ring-1 ring-primary rounded-lg p-4 cursor-pointer relative bg-blue-50/50";
+        ppWrap.className = "block border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-300 transition";
+        cardForm.style.display = 'block';
+        ppForm.style.display = 'none';
+      } else {
+        ppWrap.className = "block border border-primary ring-1 ring-primary rounded-lg p-4 cursor-pointer relative bg-blue-50/50";
+        cardWrap.className = "block border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-300 transition";
+        cardForm.style.display = 'none';
+        ppForm.style.display = 'flex';
+      }
+    }
+
+    // Step 1: Initialize Payment Verification (Show Modal)
+    function processPayment() {
+      const method = document.querySelector('input[name="paymentMethod"]:checked').value;
+      const user = getUser();
+      let paymentData = { method, travelerId: user.id };
+
+      if (document.getElementById('use-points-toggle').checked) {
+        const maxPtsForPrice = Math.floor(currentBookingData.totalPrice * 10);
+        paymentData.usePoints = Math.min(maxUsablePoints, maxPtsForPrice);
+      }
+      
+      if (method === 'credit_card') {
+        const exp = document.getElementById('cc-exp').value.split('/');
+        paymentData.cardNumber = document.getElementById('cc-number').value.replace(/\s/g, '') || '4242424242424242';
+        paymentData.cardHolder = document.getElementById('cc-name').value || 'John Doe';
+        paymentData.expiryMonth = parseInt(exp[0]) || 12;
+        paymentData.expiryYear = parseInt(exp[1]) || 2027;
+        paymentData.cvv = document.getElementById('cc-cvv').value || '123';
+        
+        cachedPaymentData = paymentData;
+        document.getElementById('otp-modal').classList.remove('hidden');
+        document.querySelectorAll('.otp-input').forEach(i => i.value = '');
+        setTimeout(() => document.querySelector('.otp-input').focus(), 100);
+      } else if (method === 'promptpay') {
+        paymentData.phoneNumber = document.getElementById('pp-phone').value || '0812345678';
+        
+        cachedPaymentData = paymentData;
+        const total = Math.max(0, currentBookingData.totalPrice - pointsDiscountValue);
+        document.getElementById('qr-amount').textContent = `${formatPrice(total)}`;
+        document.getElementById('qr-modal').classList.remove('hidden');
+        startQrCountdown(300); // 5 minutes polling simulation
+      }
+    }
+
+    // --- OTP Verification Logic ---
+    function focusNextOtp(el, index) {
+      if (el.value.length === 1 && index < 6) {
+        document.querySelectorAll('.otp-input')[index].focus();
+      }
+    }
+    
+    function closeOtpModal() {
+      document.getElementById('otp-modal').classList.add('hidden');
+    }
+    
+    async function verifyOtpAndPay() {
+      const otp = Array.from(document.querySelectorAll('.otp-input')).map(i => i.value).join('');
+      if(otp !== '123456') {
+        showToast('รหัส OTP ไม่ถูกต้อง (สำหรับทดสอบใช้ 123456)', 'error');
+        return;
+      }
+      
+      const btn = document.getElementById('btn-verify-otp');
+      btn.innerHTML = `<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2 inline-block align-middle"></div> กำลังตัดบัตร...`;
+      btn.disabled = true;
+      
+      await executeFinalPayment();
+      closeOtpModal();
+    }
+
+    // --- PromptPay QR Logic ---
+    function closeQrModal() {
+      document.getElementById('qr-modal').classList.add('hidden');
+      clearInterval(qrInterval);
+    }
+    
+    function startQrCountdown(seconds) {
+      let timeLeft = seconds;
+      const disp = document.getElementById('qr-countdown');
+      clearInterval(qrInterval);
+      qrInterval = setInterval(() => {
+        timeLeft--;
+        if(timeLeft <= 0) {
+          clearInterval(qrInterval);
+          closeQrModal();
+          showToast('หมดเวลาชำระเงิน กรุณาทำรายการใหม่', 'error');
+          return;
+        }
+        const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+        const s = (timeLeft % 60).toString().padStart(2, '0');
+        disp.textContent = `${m}:${s}`;
+      }, 1000);
+    }
+    
+    async function simulateQrPaymentComplete() {
+      const btn = document.getElementById('btn-sim-qr');
+      btn.innerHTML = `<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600 mr-2 inline-block align-middle"></div> ธนาคารกำลังยืนยัน...`;
+      btn.disabled = true;
+      await executeFinalPayment();
+      closeQrModal();
+    }
+
+    // Step 2: Execute actual backend call
+    async function executeFinalPayment() {
+      const bId = getCurrentBookingId();
+      try {
+        await apiPayBooking(bId, cachedPaymentData);
+        
+        // Check if the current booking contains a VIP item
+        if (currentBookingData && currentBookingData.items) {
+            const hasVip = currentBookingData.items.some(item => item.type === 'vip' || (item.details && item.details.isVip));
+            if (hasVip) {
+                localStorage.setItem('litrip_vip', 'true');
+                if (APP_STATE.user) {
+                    APP_STATE.user.isVip = true;
+                    localStorage.setItem('litrip_user', JSON.stringify(APP_STATE.user));
+                }
+            }
+        }
+        
+        clearCart();
+        showToast('ชำระเงินสำเร็จ!', 'success');
+        setTimeout(() => navigateTo('dashboard'), 1500);
+      } catch(err) {
+        showToast(err.message || 'การชำระเงินล้มเหลว', 'error');
+        // Reset modal buttons
+        const obtn = document.getElementById('btn-verify-otp');
+        if(obtn) { obtn.innerHTML = 'ยืนยันการชำระเงิน'; obtn.disabled = false; }
+        const qbtn = document.getElementById('btn-sim-qr');
+        if(qbtn) { qbtn.innerHTML = '[Dev] จำลองโอนเงินสำเร็จจากแอปธนาคาร'; qbtn.disabled = false; }
+      }
+    }
+  </script>
+</body>
+</html>

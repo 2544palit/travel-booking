@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ทริปของฉัน - Litrip</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#006194',
+            secondary: '#565e74',
+            tertiary: '#994100',
+            background: '#f8f9ff',
+            surface: '#ffffff',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; }
+    h1, h2, h3, h4, h5, h6, .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+  <style>
+    @media print {
+      body > header, body > div.max-w-6xl { display: none !important; }
+      body { background-color: white !important; }
+      @page { margin: 0; }
+    }
+  </style>
+  <script src="/js/app.js"></script>
+  <script src="/js/api.js"></script>
+</head>
+<body class="text-secondary pt-20 pb-12">
+
+  <header class="fixed w-full top-0 z-50 bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('landing')">
+        <span class="material-symbols-outlined text-primary text-3xl">flight_takeoff</span>
+        <span class="font-display font-bold text-xl text-primary">Litrip</span>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 font-medium">
+        <a href="#" onclick="navigateTo('landing')" class="hover:text-primary">หน้าแรก</a>
+        <a href="#" onclick="navigateTo('search')" class="hover:text-primary">ค้นหา</a>
+        <a href="#" onclick="navigateTo('dashboard')" class="text-primary hover:text-primary/80">ทริปของฉัน</a>
+      </nav>
+      <div class="profile-area items-center gap-3 cursor-pointer hidden md:flex">
+        <div class="text-right">
+          <div class="profile-name text-sm font-bold text-primary" id="head-user-name">User</div>
+          <div class="profile-tier text-xs text-tertiary" id="head-user-tier">Member</div>
+        </div>
+        <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+        <span class="material-symbols-outlined text-gray-400 hover:text-red-500" onclick="logout();" title="Logout">logout</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4">
+    
+    <!-- Success Banner (Hidden by default) -->
+    <div id="success-banner" class="hidden bg-green-500 text-white rounded-xl p-4 mb-8 flex items-center justify-between shadow-lg shadow-green-500/20">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+          <span class="material-symbols-outlined text-2xl">check_circle</span>
+        </div>
+        <div>
+          <h3 class="font-bold font-display text-lg">การจองสำเร็จ!</h3>
+          <p class="text-sm text-green-100">รหัสการจอง: <span class="font-mono bg-white/20 px-1 rounded" id="banner-booking-id"></span></p>
+        </div>
+      </div>
+      <button onclick="document.getElementById('success-banner').classList.add('hidden')" class="text-white hover:text-green-200">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      
+      <!-- Sidebar Profile -->
+      <div class="lg:col-span-1 space-y-6">
+        <div class="bg-white rounded-xl shadow-sm p-6 text-center border border-gray-100">
+          <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto mb-4 border-4 border-white shadow-sm">
+            <span class="material-symbols-outlined text-5xl">person</span>
+          </div>
+          <h2 class="font-bold text-xl text-gray-800 font-display mb-1" id="dash-name">User Name</h2>
+          <p class="text-sm text-gray-500 mb-4" id="dash-email">user@example.com</p>
+          
+          <div id="dash-vip-badge" class="hidden mb-5">
+             <div class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-700 font-bold text-xs rounded-full border border-orange-200 shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">workspace_premium</span> Litrip VIP Member
+             </div>
+             <div class="mt-2 text-[11px] text-gray-600 text-left bg-orange-50/50 p-2.5 rounded-lg border border-orange-100 shadow-sm leading-relaxed">
+                <span class="font-bold text-orange-700 mb-1 block">สิทธิพิเศษของคุณ:</span>
+                • ฟรีกระเป๋า +15 กก. ทุกเที่ยวบิน<br>
+                • ฟรีประกันการเดินทางเต็มรูปแบบ<br>
+                • ฟรีบุฟเฟต์อาหารเช้า
+             </div>
+             <button onclick="confirmCancelVip()" class="mt-3 text-[10px] text-gray-400 hover:text-red-500 underline underline-offset-2 transition-colors flex items-center justify-center gap-1 w-full">
+                <span class="material-symbols-outlined text-[12px]">cancel</span> ยกเลิกสมาชิก VIP
+             </button>
+          </div>
+          
+          <div class="bg-gradient-to-r from-tertiary to-orange-500 text-white rounded-lg p-4 text-left relative overflow-hidden">
+            <span class="material-symbols-outlined absolute -right-2 -bottom-2 text-6xl text-white/10">loyalty</span>
+            <p class="text-xs text-orange-100 mb-1">LitPoints สะสม</p>
+            <h3 class="font-bold text-2xl font-display mb-3" id="dash-points">0 <span class="text-sm font-normal">pts</span></h3>
+            
+            <!-- Progress Bar -->
+            <div id="tier-progress-container" class="hidden">
+              <div class="flex justify-between text-[10px] text-orange-100 mb-1">
+                <span id="tier-current">Member</span>
+                <span id="tier-next">Silver</span>
+              </div>
+              <div class="w-full bg-black/20 rounded-full h-1.5 mb-1">
+                <div id="tier-bar" class="bg-white h-1.5 rounded-full" style="width: 0%"></div>
+              </div>
+              <p id="tier-message" class="text-[10px] text-orange-100 text-right">สะสมอีก 0 pts</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+          <h3 class="font-bold text-sm text-gray-800 mb-3 uppercase tracking-wider">เมนูด่วน</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" onclick="navigateTo('search')" class="flex items-center gap-2 text-gray-600 hover:text-primary py-2"><span class="material-symbols-outlined text-[18px]">search</span> ค้นหาทริปใหม่</a></li>
+            <li><a href="#" onclick="alert('ระบบข้อเสนอพิเศษกำลังพัฒนา')" class="flex items-center gap-2 text-gray-600 hover:text-primary py-2"><span class="material-symbols-outlined text-[18px]">local_offer</span> ดูข้อเสนอพิเศษ</a></li>
+            <li><a href="#" onclick="alert('ระบบตั้งค่าบัญชีกำลังพัฒนา')" class="flex items-center gap-2 text-gray-600 hover:text-primary py-2"><span class="material-symbols-outlined text-[18px]">manage_accounts</span> ตั้งค่าบัญชี</a></li>
+            <li><a href="#" onclick="logout()" class="flex items-center gap-2 text-red-500 hover:text-red-600 py-2 mt-4 border-t border-gray-100 pt-4"><span class="material-symbols-outlined text-[18px]">logout</span> ออกจากระบบ</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bookings List -->
+      <div class="lg:col-span-3">
+        <h2 class="text-2xl font-bold font-display text-gray-800 mb-6">ทริปของฉัน</h2>
+        
+        <div id="bookings-container" class="space-y-4 mb-10">
+          <!-- Loader -->
+          <div class="flex justify-center py-12"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>
+        </div>
+
+        <!-- Points History Section -->
+        <h2 class="text-xl font-bold font-display text-gray-800 mb-4">ประวัติ LitPoints</h2>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-50 text-gray-600">
+              <tr>
+                <th class="px-6 py-3 font-medium">วันที่</th>
+                <th class="px-6 py-3 font-medium">รายละเอียด</th>
+                <th class="px-6 py-3 font-medium text-right">คะแนน</th>
+              </tr>
+            </thead>
+            <tbody id="points-history-container" class="divide-y divide-gray-100 text-gray-800">
+              <tr><td colspan="3" class="px-6 py-8 text-center text-gray-400">กำลังโหลด...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if(!isLoggedIn()){ navigateTo('login'); return; }
+      
+      try {
+        const isVip = localStorage.getItem('litrip_vip') === 'true';
+        const res = await apiGetMe();
+        const user = res.data.user;
+        if(isVip) user.isVip = true;
+        localStorage.setItem('litrip_user', JSON.stringify(user));
+        APP_STATE.user = user;
+      } catch (err) {
+        console.warn('Failed to get fresh user data, using local session');
+      }
+
+      const user = getUser();
+      if(user) {
+        document.getElementById('head-user-name').textContent = user.name || 'User';
+        
+        const tierEl = document.getElementById('head-user-tier');
+        const isVip = (typeof isUserVip === 'function') ? isUserVip() : (user.isVip || localStorage.getItem('litrip_vip') === 'true');
+        
+        if (isVip) {
+            tierEl.innerHTML = '<span class="material-symbols-outlined text-[12px] inline-block align-middle mr-0.5">workspace_premium</span>VIP Member';
+            tierEl.className = 'profile-tier text-xs text-orange-600 font-bold';
+            const vipBadge = document.getElementById('dash-vip-badge');
+            if (vipBadge) vipBadge.classList.remove('hidden');
+        } else {
+            tierEl.textContent = user.tier || 'Member';
+            tierEl.className = 'profile-tier text-xs text-tertiary';
+        }
+
+        document.getElementById('dash-name').textContent = user.name || 'User Name';
+        document.getElementById('dash-email').textContent = user.email || 'user@example.com';
+        document.getElementById('dash-points').innerHTML = `${(user.loyaltyPoints || 0).toLocaleString()} <span class="text-sm font-normal">pts</span>`;
+
+        // Render Tier Progress
+        if (user.nextTierInfo) {
+          document.getElementById('tier-progress-container').classList.remove('hidden');
+          document.getElementById('tier-current').textContent = user.tier;
+          document.getElementById('tier-next').textContent = user.nextTierInfo.nextTier;
+          document.getElementById('tier-message').textContent = `สะสมอีก ${(user.nextTierInfo.pointsNeeded).toLocaleString()} pts`;
+          
+          let maxPts = 2000;
+          if (user.tier === 'Silver') maxPts = 5000;
+          if (user.tier === 'Gold') maxPts = 10000;
+          
+          let minPts = 0;
+          if (user.tier === 'Silver') minPts = 2000;
+          if (user.tier === 'Gold') minPts = 5000;
+
+          const progress = ((user.loyaltyPoints - minPts) / (maxPts - minPts)) * 100;
+          document.getElementById('tier-bar').style.width = `${Math.min(100, Math.max(0, progress))}%`;
+        } else {
+          document.getElementById('tier-progress-container').classList.remove('hidden');
+          document.getElementById('tier-current').textContent = user.tier || 'Member';
+          document.getElementById('tier-next').textContent = 'Max Tier';
+          document.getElementById('tier-bar').style.width = '100%';
+          document.getElementById('tier-message').textContent = 'ระดับสูงสุดแล้ว';
+        }
+
+        // Render Points History
+        const historyContainer = document.getElementById('points-history-container');
+        if (user.pointHistory && user.pointHistory.length > 0) {
+          historyContainer.innerHTML = user.pointHistory.map(h => `
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-3 whitespace-nowrap text-gray-500">${new Date(h.date).toLocaleDateString('th-TH')}</td>
+              <td class="px-6 py-3">${h.desc}</td>
+              <td class="px-6 py-3 text-right font-medium ${h.points > 0 ? 'text-green-500' : 'text-red-500'}">
+                ${h.points > 0 ? '+' : ''}${h.points}
+              </td>
+            </tr>
+          `).join('');
+        } else {
+          historyContainer.innerHTML = '<tr><td colspan="3" class="px-6 py-8 text-center text-gray-400">ไม่มีประวัติคะแนน</td></tr>';
+        }
+      }
+
+      // Check if just checked out
+      const bId = getCurrentBookingId();
+      if(bId && document.referrer.includes('checkout')) {
+        const banner = document.getElementById('success-banner');
+        banner.classList.remove('hidden');
+        document.getElementById('banner-booking-id').textContent = bId.substring(0,8).toUpperCase();
+        localStorage.removeItem('litrip_booking_id'); // clear it
+      }
+
+      loadBookings();
+    });
+
+    async function loadBookings() {
+      const container = document.getElementById('bookings-container');
+      try {
+        const user = getUser();
+        const res = await apiGetMyBookings(user.id);
+        const bookings = res.data || [];
+        
+        if(bookings.length === 0) {
+          container.innerHTML = `
+            <div class="bg-white rounded-xl p-10 text-center border border-gray-100">
+              <span class="material-symbols-outlined text-5xl text-gray-300 mb-3">flight_takeoff</span>
+              <h3 class="text-lg font-bold text-gray-800 mb-2">ยังไม่มีประวัติการเดินทาง</h3>
+              <p class="text-gray-500 mb-6 text-sm">เริ่มต้นสร้างประสบการณ์ใหม่กับ Litrip</p>
+              <button onclick="navigateTo('search')" class="bg-primary text-white px-6 py-2 rounded-lg">ค้นหาทริปเลย</button>
+            </div>
+          `;
+          return;
+        }
+
+        // Sort by date desc
+        bookings.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        window.globalBookings = bookings;
+
+        container.innerHTML = '';
+        bookings.forEach(b => {
+          const state = b.state || b.stateName || b.status;
+          const bId = b.bookingId || b.id;
+          
+          let badgeHtml = '';
+          if(state === 'confirmed') badgeHtml = `<span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">check_circle</span> ยืนยันแล้ว</span>`;
+          else if(state === 'pending') badgeHtml = `<span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">pending</span> รอดำเนินการ</span>`;
+          else badgeHtml = `<span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">cancel</span> ยกเลิกแล้ว</span>`;
+
+          const dateStr = formatDate(b.createdAt);
+          const shortId = bId.substring(0,8).toUpperCase();
+          const itemsCount = b.itemCount || (b.items ? b.items.length : 0);
+          
+          let itemsDetailHtml = '';
+          if (b.items && b.items.length > 0) {
+            itemsDetailHtml = '<div class="mt-3 bg-gray-50 rounded p-2 space-y-2">';
+            b.items.forEach((item, index) => {
+              const typeIcon = item.type === 'flight' ? 'flight' : 'hotel';
+              const name = item.details ? (item.details.airline || item.details.hotelName || item.itemId) : item.itemId;
+              
+              let sub = '';
+              if (item.details) {
+                if (item.type === 'flight') {
+                  sub = item.details.flightNo || '';
+                } else if (item.type === 'hotel') {
+                  const checkInText = item.details.checkInDate ? new Date(item.details.checkInDate).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) : '';
+                  const checkOutText = item.details.checkOutDate ? new Date(item.details.checkOutDate).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) : '';
+                  const nightsStr = item.details.nights ? ` (${item.details.nights} คืน)` : '';
+                  sub = item.details.roomType || '';
+                  if (checkInText) sub += ` • ${checkInText} - ${checkOutText}${nightsStr}`;
+                }
+              }
+              
+              const isConfirmed = state === 'confirmed';
+              const btnText = item.type === 'flight' ? 'ดู E-Ticket' : 'ดู Voucher';
+              const btnHtml = isConfirmed 
+                ? `<button onclick="viewTicket('${bId}', ${index})" class="text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-bold hover:bg-primary/20 transition flex items-center gap-1 shrink-0"><span class="material-symbols-outlined text-[14px]">confirmation_number</span> ${btnText}</button>`
+                : '';
+
+              itemsDetailHtml += `
+                <div class="flex items-center justify-between gap-2 text-sm text-gray-700 bg-white p-3 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition">
+                  <div class="flex items-center gap-3 overflow-hidden">
+                    <div class="w-10 h-10 shrink-0 rounded-full bg-blue-50 flex items-center justify-center text-primary">
+                      <span class="material-symbols-outlined">${typeIcon}</span>
+                    </div>
+                    <div class="truncate">
+                      <div class="font-bold text-gray-800 truncate">${name}</div>
+                      <div class="text-xs text-gray-500 truncate">${sub}</div>
+                    </div>
+                  </div>
+                  ${btnHtml}
+                </div>
+              `;
+            });
+            itemsDetailHtml += '</div>';
+          }
+
+          let div = document.createElement('div');
+          div.className = 'bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition';
+          div.innerHTML = `
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 border-b border-gray-100 pb-4">
+              <div>
+                <div class="flex items-center gap-3 mb-1">
+                  <h3 class="font-bold text-gray-800 font-display">Booking #${shortId}</h3>
+                  ${badgeHtml}
+                </div>
+                <p class="text-xs text-gray-500">ทำรายการเมื่อ: ${dateStr}</p>
+              </div>
+              <div class="text-right w-full md:w-auto">
+                <p class="text-xs text-gray-500 mb-1">ยอดรวมสุทธิ</p>
+                <p class="text-xl font-bold text-tertiary font-display">${formatPrice(b.totalPrice)}</p>
+              </div>
+            </div>
+            
+            <div class="flex justify-between items-start">
+              <div class="text-sm text-gray-600 flex-1">
+                <span class="material-symbols-outlined text-[16px] align-middle text-primary mr-1">luggage</span> 
+                จำนวน ${itemsCount} รายการ
+                ${itemsDetailHtml}
+              </div>
+              <div class="flex flex-col items-end gap-2 mt-2 ml-4">
+                ${state === 'pending' ? `<button onclick="resumePayment('${bId}')" class="bg-primary text-white text-xs px-4 py-2 rounded-lg font-bold hover:bg-primary/90 transition flex items-center gap-1 shadow-sm"><span class="material-symbols-outlined text-[16px]">payment</span> ชำระเงินต่อ</button>` : ''}
+                ${state !== 'cancelled' ? `<button onclick="cancelBooking('${bId}')" class="text-red-500 text-sm hover:underline font-medium">ยกเลิกการจอง</button>` : ''}
+              </div>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+
+      } catch(err) {
+        container.innerHTML = `<div class="text-red-500 text-center p-8 bg-red-50 rounded-xl">ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่</div>`;
+      }
+    }
+
+    async function cancelBooking(id) {
+      if(!confirm('คุณแน่ใจหรือไม่ที่จะยกเลิกการจองนี้?')) return;
+      try {
+        await apiCancelBooking(id);
+        showToast('ยกเลิกการจองสำเร็จ', 'success');
+        loadBookings();
+      } catch(err) {
+        showToast(err.message || 'ไม่สามารถยกเลิกได้', 'error');
+      }
+    }
+
+    function resumePayment(bookingId) {
+      setCurrentBookingId(bookingId);
+      navigateTo('checkout');
+    }
+
+    function viewTicket(bId, itemIndex) {
+      if(!window.globalBookings) return;
+      const booking = window.globalBookings.find(b => (b.bookingId || b.id) === bId);
+      if(!booking || !booking.items[itemIndex]) return;
+      
+      const item = booking.items[itemIndex];
+      const user = getUser();
+      
+      if(item.type === 'flight') {
+        renderFlightTicket(booking, item, user);
+      } else {
+        renderHotelTicket(booking, item, user);
+      }
+      
+      document.getElementById('ticket-modal').classList.remove('hidden');
+    }
+
+    function closeTicketModal() {
+      document.getElementById('ticket-modal').classList.add('hidden');
+    }
+
+    function renderFlightTicket(booking, item, user) {
+      const d = item.details || {};
+      const pnr = (booking.bookingId || booking.id).substring(0,8).toUpperCase();
+      const deptDate = new Date(d.departureTime || booking.createdAt);
+      const arrDate = new Date(d.arrivalTime || booking.createdAt);
+      const origin = d.origin || 'BKK';
+      const dest = d.destination || 'DEL';
+      const originCode = (origin.match(/\(([A-Z]{3})\)/)?.[1] || origin.substring(0,3)).toUpperCase();
+      const destCode = (dest.match(/\(([A-Z]{3})\)/)?.[1] || dest.substring(0,3)).toUpperCase();
+      const airline = d.airline || 'Litrip Airlines';
+      const flightNo = d.flightNo || 'SH-123';
+      const seatType = d.seatType || 'Economy';
+      
+      const barcodeBg = 'repeating-linear-gradient(90deg, #000, #000 2px, transparent 2px, transparent 4px, #000 4px, #000 5px, transparent 5px, transparent 8px)';
+
+      document.getElementById('ticket-print-area').innerHTML = `
+          <div class="flex flex-col bg-white overflow-hidden shadow-sm">
+              <div class="bg-primary text-white p-6 flex justify-between items-center print:border-b-4 print:border-primary-dark">
+                  <div class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-3xl">flight</span>
+                      <h2 class="text-xl font-bold font-display uppercase tracking-widest">Boarding Pass</h2>
+                  </div>
+                  <div class="text-right pr-24 print:pr-0">
+                      <p class="text-xs text-primary-100 uppercase tracking-widest">Booking Ref</p>
+                      <p class="text-2xl font-bold font-mono">${pnr}</p>
+                  </div>
+              </div>
+              
+              <div class="p-8 relative">
+                  <!-- Fake Perforated Edges (Not visible on print) -->
+                  <div class="absolute -left-3 top-1/2 w-6 h-6 bg-black/60 rounded-full print:hidden"></div>
+                  <div class="absolute -right-3 top-1/2 w-6 h-6 bg-black/60 rounded-full print:hidden"></div>
+                  
+                  <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-8 border-dashed print:border-gray-300">
+                      <div class="text-left w-32 shrink-0">
+                          <p class="text-4xl font-bold text-gray-800 font-display">${originCode}</p>
+                          <p class="text-sm text-gray-500 truncate">${origin.split(' ')[0].replace(/\\(.*\\)/,'')}</p>
+                          <p class="text-lg font-bold text-primary mt-2">${deptDate.toLocaleTimeString('th-TH', {hour: '2-digit', minute:'2-digit'})}</p>
+                          <p class="text-xs text-gray-400">${deptDate.toLocaleDateString('th-TH')}</p>
+                      </div>
+                      <div class="flex-1 flex flex-col items-center justify-center relative px-2">
+                          <p class="text-xs text-gray-400 mb-4">${d.duration || '2h 30m'}</p>
+                          <div class="w-full h-px bg-gray-300 relative my-2">
+                              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 print:bg-transparent flex items-center justify-center">
+                                  <span class="material-symbols-outlined text-primary transform rotate-90 text-xl">flight</span>
+                              </div>
+                          </div>
+                          <p class="text-xs text-gray-500 font-bold mt-4 text-center leading-tight">${airline}</p>
+                          <p class="text-[10px] text-gray-400 text-center mt-1">Flight: ${flightNo}</p>
+                      </div>
+                      <div class="text-right w-32 shrink-0">
+                          <p class="text-4xl font-bold text-gray-800 font-display">${destCode}</p>
+                          <p class="text-sm text-gray-500 truncate">${dest.split(' ')[0].replace(/\\(.*\\)/,'')}</p>
+                          <p class="text-lg font-bold text-primary mt-2">${arrDate.toLocaleTimeString('th-TH', {hour: '2-digit', minute:'2-digit'})}</p>
+                          <p class="text-xs text-gray-400">${arrDate.toLocaleDateString('th-TH')}</p>
+                      </div>
+                  </div>
+                  
+                  <div class="grid grid-cols-4 gap-4 mb-8">
+                      <div class="col-span-2">
+                          <p class="text-xs text-gray-400 uppercase tracking-wider">Passenger</p>
+                          <p class="text-lg font-bold text-gray-800 uppercase truncate">${user.name}</p>
+                      </div>
+                      <div>
+                          <p class="text-xs text-gray-400 uppercase tracking-wider">Gate</p>
+                          <p class="text-lg font-bold text-gray-800">${Math.floor(Math.random() * 20) + 1}${['A','B','C'][Math.floor(Math.random()*3)]}</p>
+                      </div>
+                      <div>
+                          <p class="text-xs text-gray-400 uppercase tracking-wider">Seat</p>
+                          <p class="text-lg font-bold text-gray-800">${Math.floor(Math.random() * 30) + 5}${['A','B','C','D','E','F'][Math.floor(Math.random()*6)]}</p>
+                      </div>
+                  </div>
+                  <div class="grid grid-cols-4 gap-4">
+                      <div class="col-span-2">
+                          <p class="text-xs text-gray-400 uppercase tracking-wider">Class</p>
+                          <p class="text-sm font-bold text-gray-800 uppercase">${seatType}</p>
+                      </div>
+                      <div class="col-span-2">
+                          <p class="text-xs text-gray-400 uppercase tracking-wider">Baggage</p>
+                          <p class="text-sm font-bold text-gray-800 uppercase">20 KG</p>
+                      </div>
+                  </div>
+              </div>
+              
+              <div class="bg-gray-50 p-6 flex justify-between items-center print:border-t print:border-gray-200">
+                  <div style="background: ${barcodeBg}; height: 40px; width: 60%; opacity: 0.8;" class="print:opacity-100"></div>
+                  <p class="font-mono text-gray-400 text-sm tracking-widest">${pnr}</p>
+              </div>
+          </div>
+      `;
+    }
+
+    function renderHotelTicket(booking, item, user) {
+      const d = item.details || {};
+      const pnr = (booking.bookingId || booking.id).substring(0,8).toUpperCase();
+      const inDate = new Date(d.checkInDate || d.checkIn || booking.createdAt);
+      const outDate = new Date(d.checkOutDate || d.checkOut || Date.now() + 86400000);
+      const nights = d.nights || 1;
+      const hotelName = d.hotelName || item.itemId || 'Litrip Hotel';
+      const location = d.location || 'City Center';
+      const roomType = d.roomType || 'Standard Room';
+
+      document.getElementById('ticket-print-area').innerHTML = `
+          <div class="flex flex-col bg-white overflow-hidden shadow-sm">
+              <div class="bg-indigo-600 text-white p-6 flex justify-between items-center print:border-b-4 print:border-indigo-800">
+                  <div class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-3xl">hotel</span>
+                      <h2 class="text-xl font-bold font-display uppercase tracking-widest">Hotel Voucher</h2>
+                  </div>
+                  <div class="text-right pr-24 print:pr-0">
+                      <p class="text-xs text-indigo-200 uppercase tracking-widest">Booking ID</p>
+                      <p class="text-2xl font-bold font-mono">${pnr}</p>
+                  </div>
+              </div>
+              
+              <div class="p-8">
+                  <div class="mb-6 pb-6 border-b border-gray-100 text-center print:border-gray-300">
+                      <div class="flex justify-center text-yellow-400 mb-2">
+                          <span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span>
+                      </div>
+                      <h3 class="text-3xl font-bold text-gray-800 font-display mb-1">${hotelName}</h3>
+                      <p class="text-gray-500 text-sm"><span class="material-symbols-outlined text-[14px] align-middle">location_on</span> ${location}</p>
+                  </div>
+                  
+                  <div class="grid grid-cols-2 gap-8 mb-6">
+                      <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 print:border-gray-300 print:bg-white text-center relative">
+                          <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Check-in</p>
+                          <p class="text-lg font-bold text-indigo-600">${inDate.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric'})}</p>
+                          <p class="text-sm text-gray-500">After 14:00</p>
+                          
+                          <!-- Nights Badge -->
+                          <div class="absolute -right-6 top-1/2 -translate-y-1/2 bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded-full z-10 border border-indigo-200">
+                              ${nights} คืน
+                          </div>
+                      </div>
+                      <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 print:border-gray-300 print:bg-white text-center">
+                          <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Check-out</p>
+                          <p class="text-lg font-bold text-indigo-600">${outDate.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric'})}</p>
+                          <p class="text-sm text-gray-500">Before 12:00</p>
+                      </div>
+                  </div>
+                  
+                  <div class="grid grid-cols-2 gap-4">
+                      <div>
+                          <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Guest Name</p>
+                          <p class="text-base font-bold text-gray-800 uppercase">${user.name}</p>
+                      </div>
+                      <div>
+                          <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Room Type</p>
+                          <p class="text-base font-bold text-gray-800 uppercase">${roomType}</p>
+                      </div>
+                      <div>
+                          <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Guests</p>
+                          <p class="text-base font-bold text-gray-800 uppercase">2 Adults</p>
+                      </div>
+                      <div>
+                          <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Status</p>
+                          <p class="text-base font-bold text-green-600 uppercase flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">check_circle</span> PAID</p>
+                      </div>
+                  </div>
+              </div>
+              
+              <div class="bg-gray-50 p-6 flex justify-between items-center print:border-t print:border-gray-200">
+                  <div class="text-xs text-gray-400">Please present this voucher upon arrival.</div>
+                  <div class="w-16 h-16 bg-gray-800 flex items-center justify-center p-1 rounded-lg">
+                      <div class="w-full h-full bg-white flex flex-wrap" style="align-content: space-between; justify-content: space-between; padding: 2px;">
+                          <!-- Fake QR -->
+                          <div class="w-3 h-3 bg-black"></div><div class="w-3 h-3 bg-black"></div><div class="w-3 h-3 bg-white"></div>
+                          <div class="w-3 h-3 bg-white"></div><div class="w-3 h-3 bg-black"></div><div class="w-3 h-3 bg-black"></div>
+                          <div class="w-3 h-3 bg-black"></div><div class="w-3 h-3 bg-white"></div><div class="w-3 h-3 bg-black"></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      `;
+    }
+  </script>
+
+  <!-- Ticket Modal Container -->
+  <div id="ticket-modal" class="fixed inset-0 z-[100] hidden bg-black/70 flex items-center justify-center p-4 print:p-0 print:bg-white print:block print:relative print:z-auto">
+    <div class="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl relative print:shadow-none print:w-full print:rounded-none">
+        
+        <!-- Actions (Hide on print) -->
+        <div class="absolute top-4 right-4 flex gap-2 print:hidden z-10">
+            <button onclick="window.print()" class="bg-gray-800 text-white w-10 h-10 flex items-center justify-center rounded-full shadow hover:bg-gray-900 transition" title="Print"><span class="material-symbols-outlined">print</span></button>
+            <button onclick="closeTicketModal()" class="bg-white text-gray-700 w-10 h-10 flex items-center justify-center rounded-full shadow hover:bg-gray-100 transition" title="Close"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        
+        <!-- Ticket Print Area -->
+        <div id="ticket-print-area" class="p-0"></div>
+    </div>
+  </div>
+
+
+  <!-- Cancel VIP Modal -->
+  <div id="cancel-vip-modal" class="hidden fixed inset-0 z-[100] bg-black/60 flex items-center justify-center backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl scale-95 opacity-0 transition-all duration-200" id="cancel-vip-modal-content">
+      <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center text-red-500 mx-auto mb-4">
+        <span class="material-symbols-outlined text-3xl">warning</span>
+      </div>
+      <h3 class="font-bold font-display text-xl text-center text-gray-900 mb-2">ยกเลิกสถานะ VIP?</h3>
+      <p class="text-sm text-gray-600 text-center mb-6 leading-relaxed">
+        หากยกเลิก คุณจะเสียสิทธิ์<strong class="text-red-500">ฟรีกระเป๋า 15 กก. และ ฟรีประกันการเดินทาง</strong> สำหรับการจองครั้งถัดไปทันที คุณแน่ใจหรือไม่?
+      </p>
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="document.getElementById('cancel-vip-modal').classList.add('hidden')" class="py-2.5 px-4 rounded-xl font-bold text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+          กลับไปใช้งานต่อ
+        </button>
+        <button onclick="executeCancelVip()" class="py-2.5 px-4 rounded-xl font-bold text-sm bg-red-50 text-red-600 hover:bg-red-100 border border-red-100 transition-colors">
+          ยืนยันการยกเลิก
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function confirmCancelVip() {
+      const modal = document.getElementById('cancel-vip-modal');
+      const content = document.getElementById('cancel-vip-modal-content');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function executeCancelVip() {
+      // 1. Remove VIP Flag
+      localStorage.removeItem('litrip_vip');
+      
+      try {
+        let uStr = localStorage.getItem('litrip_user');
+        if(uStr) {
+            let u = JSON.parse(uStr);
+            u.isVip = false;
+            localStorage.setItem('litrip_user', JSON.stringify(u));
+        }
+      } catch(e) {}
+      
+      if (typeof APP_STATE !== 'undefined' && APP_STATE.user) {
+        APP_STATE.user.isVip = false;
+      }
+
+      // 2. Hide Modal
+      document.getElementById('cancel-vip-modal').classList.add('hidden');
+      
+      // 3. Show Toast & Reload
+      showToast('ยกเลิกสมาชิก VIP เรียบร้อยแล้ว', 'info');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    }
+  </script>
+</body>
+
+</html>
