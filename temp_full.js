@@ -164,6 +164,7 @@
 
       // 2. Set the form values
       const destSelect = document.getElementById('smart-dest');
+      const dest = destSelect ? destSelect.value : '';
       const styleSelect = document.getElementById('smart-style');
       if (destSelect && destCode) destSelect.value = destCode;
       if (styleSelect && styleCode) styleSelect.value = styleCode;
@@ -238,6 +239,7 @@
     };
 
   
+
 
 
 
@@ -2086,6 +2088,14 @@
           });
         }
         if (acts.length === 0) acts = localActs; // ultimate fallback
+        // EXPOSE FOR SWAP MODAL
+        window.currentSmartTripItems = {
+            flightsOut: flightsOut,
+            flightsRet: flightsRet,
+            hotels: hotels,
+            acts: acts
+        };
+    
 
         const sortF = (a, b) => (a.totalPrice || a.price || 0) - (b.totalPrice || b.price || 0);
         const sortH = (a, b) => (a.pricePerNight || a.totalPrice || 0) - (b.pricePerNight || b.totalPrice || 0);
@@ -2180,6 +2190,7 @@
       const d = currentSmartTripData[selectedSmartTripTier];
 
       const destSelect = document.getElementById('smart-dest');
+      const dest = destSelect ? destSelect.value : '';
       const destName = destSelect.options[destSelect.selectedIndex].text.replace(/ \(.*\)/, ''); // Remove the (NRT) part
 
       // Build Tier Cards
@@ -2204,7 +2215,7 @@
                        <span class="material-symbols-outlined text-orange-500 text-2xl mb-1">lock</span>
                        <span class="text-[10px] font-bold text-orange-600">VIP Exclusive</span>
                    </div>
-                   <div class="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-500 flex flex-col items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity transform scale-105 duration-300">
+                   <div class="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-500 flex flex-col items-center justify-center z-20 transition-opacity shadow-sm hover:bg-orange-100 transform scale-105 duration-300">
                        <span class="material-symbols-outlined text-white text-xl mb-1">workspace_premium</span>
                        <span class="text-[11px] font-bold text-white">รับส่วนลดพิเศษ ปลดล็อกเลย</span>
                    </div>
@@ -2259,7 +2270,7 @@
                        <div class="flex-1">
                           <div class="flex justify-between items-start">
                               <p class="text-xs text-gray-500 font-bold mb-0.5">เช็คอินเข้าพัก (${d.nights || 2} คืน)</p>
-                              <button onclick="openSwapModal('hotel')" class="text-[11px] text-secondary font-bold hover:underline bg-orange-50 px-2 py-0.5 rounded flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-outlined text-[12px]">swap_horiz</span> เปลี่ยน</button>
+                              <button onclick="openSwapModal('hotel')" class="text-[11px] text-secondary font-bold hover:underline bg-orange-50 px-2 py-0.5 rounded flex items-center gap-1 transition-opacity shadow-sm hover:bg-orange-100"><span class="material-symbols-outlined text-[12px]">swap_horiz</span> เปลี่ยน</button>
                           </div>
                           <p class="text-sm font-bold text-gray-800 pr-16">${d.h.hotelName || d.h.details?.hotelName}</p>
                           <p class="text-xs text-secondary mt-0.5">${d.h.roomType || d.h.details?.roomType || 'Standard Room'}</p>
@@ -2277,7 +2288,7 @@
                        <div class="flex-1">
                           <div class="flex justify-between items-start">
                               <p class="text-xs text-secondary font-bold mb-0.5">กิจกรรมหลักประจำทริป</p>
-                              <button onclick="openSwapModal('a1')" class="text-[11px] text-secondary font-bold hover:underline bg-orange-50 px-2 py-0.5 rounded flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-outlined text-[12px]">swap_horiz</span> เปลี่ยน</button>
+                              <button onclick="openSwapModal('a1')" class="text-[11px] text-secondary font-bold hover:underline bg-orange-50 px-2 py-0.5 rounded flex items-center gap-1 transition-opacity shadow-sm hover:bg-orange-100"><span class="material-symbols-outlined text-[12px]">swap_horiz</span> เปลี่ยน</button>
                           </div>
                           <p class="text-sm font-bold text-gray-800 line-clamp-1 pr-16">${d.a1.title || d.a1.details?.title}</p>
                        </div>
@@ -2294,7 +2305,7 @@
                        <div class="flex-1">
                           <div class="flex justify-between items-start">
                               <p class="text-xs text-secondary font-bold mb-0.5">กิจกรรมยามเช้า</p>
-                              <button onclick="openSwapModal('a2')" class="text-[11px] text-secondary font-bold hover:underline bg-orange-50 px-2 py-0.5 rounded flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-outlined text-[12px]">swap_horiz</span> เปลี่ยน</button>
+                              <button onclick="openSwapModal('a2')" class="text-[11px] text-secondary font-bold hover:underline bg-orange-50 px-2 py-0.5 rounded flex items-center gap-1 transition-opacity shadow-sm hover:bg-orange-100"><span class="material-symbols-outlined text-[12px]">swap_horiz</span> เปลี่ยน</button>
                           </div>
                           <p class="text-sm font-bold text-gray-800 line-clamp-1 pr-16">${d.a2.title || d.a2.details?.title}</p>
                        </div>
@@ -2342,26 +2353,34 @@
                      
                      <!-- Map Mockup -->
                      <h4 class="font-bold text-gray-800 mb-3 text-sm flex items-center gap-1"><span class="material-symbols-outlined text-primary text-[18px]">explore</span> แผนที่เส้นทาง (Interactive Route)</h4>
-                     <div class="relative w-full h-[220px] bg-gray-200 rounded-xl overflow-hidden shadow-inner border border-gray-200">
+                     <div onclick="openMapModal()" class="relative w-full h-[220px] bg-gray-200 rounded-xl overflow-hidden shadow-inner border border-gray-200 cursor-pointer group hover:shadow-md transition-shadow">
+                         <!-- Overlay for hover -->
+                         <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-[60]">
+                             <span class="bg-white text-primary font-bold px-4 py-2 rounded-lg shadow-xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 border border-gray-100"><span class="material-symbols-outlined text-lg">zoom_in</span> ขยายแผนที่ (ฟรี)</span>
+                         </div>
                          <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&q=80" class="w-full h-full object-cover opacity-[0.65]" style="filter: sepia(0.2) hue-rotate(190deg) contrast(0.9);" />
                          <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
                              <style>
                                  @keyframes dashanim { to { stroke-dashoffset: -20; } }
                                  .route-line { stroke-dasharray: 4,4; animation: dashanim 3s linear infinite; }
                              </style>
-                             <path d="M 15,20 Q 50,40 75,45 T 25,80" fill="none" stroke="#fe932c" stroke-width="2.5" class="route-line" />
+                             <path d="M 23,17 L 78,42 L 53,77 L 18,52 L 23,17" fill="none" stroke="#fe932c" stroke-width="2.5" class="route-line" />
                          </svg>
-                         <div class="absolute top-[15%] left-[10%] flex flex-col items-center group cursor-pointer hover:z-50">
-                             <div class="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-lg ring-2 ring-white hover:scale-110 transition-transform">1</div>
-                             <div class="absolute top-7 bg-white text-[10px] px-2 py-1 rounded shadow text-gray-700 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity font-bold">สนามบินปลายทาง</div>
+                         <div class="absolute top-[15%] left-[20%] flex flex-col items-center group cursor-pointer hover:z-50">
+                             <div class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-[12px] font-bold shadow-lg ring-2 ring-white hover:scale-110 transition-transform"><span class="material-symbols-outlined text-[14px]">flight_land</span></div>
+                             <div class="absolute top-7 bg-white text-[10px] px-2 py-1 rounded shadow text-gray-700 whitespace-nowrap transition-opacity shadow-sm hover:bg-orange-100 font-bold">สนามบินปลายทาง</div>
                          </div>
-                         <div class="absolute top-[40%] left-[70%] flex flex-col items-center group cursor-pointer hover:z-50">
-                             <div class="w-6 h-6 bg-secondary text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-lg ring-2 ring-white hover:scale-110 transition-transform">2</div>
-                             <div class="absolute top-7 bg-white text-[10px] px-2 py-1 rounded shadow text-gray-700 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity font-bold line-clamp-1 max-w-[120px]">${d.h.hotelName || d.h.details?.hotelName}</div>
+                         <div class="absolute top-[40%] left-[75%] flex flex-col items-center group cursor-pointer hover:z-50">
+                             <div class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-[12px] font-bold shadow-lg ring-2 ring-white hover:scale-110 transition-transform"><span class="material-symbols-outlined text-[14px]">hotel</span></div>
+                             <div class="absolute top-7 right-0 bg-white text-[10px] px-2 py-1 rounded shadow text-gray-700 whitespace-nowrap transition-opacity shadow-sm hover:bg-orange-100 font-bold line-clamp-1 max-w-[100px]">${d.h.hotelName || d.h.details?.hotelName}</div>
                          </div>
-                         <div class="absolute top-[75%] left-[20%] flex flex-col items-center group cursor-pointer hover:z-50">
-                             <div class="w-6 h-6 bg-[#2563eb] text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-lg ring-2 ring-white hover:scale-110 transition-transform">3</div>
-                             <div class="absolute top-7 bg-white text-[10px] px-2 py-1 rounded shadow text-gray-700 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity font-bold line-clamp-1 max-w-[120px]">${d.a1.title || d.a1.details?.title}</div>
+                         <div class="absolute top-[75%] left-[50%] flex flex-col items-center group cursor-pointer hover:z-50">
+                             <div class="w-6 h-6 bg-teal-500 text-white rounded-full flex items-center justify-center text-[12px] font-bold shadow-lg ring-2 ring-white hover:scale-110 transition-transform"><span class="material-symbols-outlined text-[14px]">local_activity</span></div>
+                             <div class="absolute top-7 bg-white text-[10px] px-2 py-1 rounded shadow text-gray-700 whitespace-nowrap transition-opacity shadow-sm hover:bg-orange-100 font-bold line-clamp-1 max-w-[120px]">${d.a1.title || d.a1.details?.title}</div>
+                         </div>
+                         <div class="absolute top-[50%] left-[15%] flex flex-col items-center group cursor-pointer hover:z-50">
+                             <div class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-[12px] font-bold shadow-lg ring-2 ring-white hover:scale-110 transition-transform"><span class="material-symbols-outlined text-[14px]">photo_camera</span></div>
+                             <div class="absolute top-7 bg-white text-[10px] px-2 py-1 rounded shadow text-gray-700 whitespace-nowrap transition-opacity shadow-sm hover:bg-orange-100 font-bold line-clamp-1 max-w-[120px]">${d.a2.title || d.a2.details?.title}</div>
                          </div>
                      </div>
                   </div>
@@ -2510,7 +2529,7 @@
 
 window.currentSwapTarget = null;
 window.openSwapModal = function(targetType) {
-    if (!window.allData || !currentSmartTripData) return;
+    if (!window.currentSmartTripItems || !currentSmartTripData) return;
     
     window.currentSwapTarget = targetType;
     const dest = document.getElementById('smart-dest').value;
@@ -2522,12 +2541,10 @@ window.openSwapModal = function(targetType) {
     let items = [];
     if (targetType === 'hotel') {
         document.getElementById('swap-title').textContent = 'เลือกโรงแรมที่ต้องการเปลี่ยน';
-        items = (allData.hotel || []).filter(h => h.dest === dest || h.city === dest || h.details?.dest === dest);
-        if(items.length === 0) items = allData.hotel.slice(0, 5); // Fallback
+        items = window.currentSmartTripItems?.hotels || [];
     } else {
         document.getElementById('swap-title').textContent = 'เลือกกิจกรรมที่ต้องการเปลี่ยน';
-        items = (allData.activity || []).filter(a => a.destCode === dest || a.details?.destCode === dest);
-        if(items.length === 0) items = allData.activity.slice(0, 5);
+        items = window.currentSmartTripItems?.acts || [];
     }
 
     const container = document.getElementById('swap-items-container');
@@ -2574,10 +2591,10 @@ window.confirmSwap = function(itemId, targetType) {
     
     let newItem = null;
     if (targetType === 'hotel') {
-        newItem = allData.hotel.find(h => (h.hotelItemId || h.itemId || h.id) == itemId);
+        newItem = (window.currentSmartTripItems?.hotels || []).find(h => (h.hotelItemId || h.itemId || h.id) == itemId);
         if (newItem) tierData.h = newItem;
     } else {
-        newItem = allData.activity.find(a => (a.activityItemId || a.itemId || a.id) == itemId);
+        newItem = (window.currentSmartTripItems?.acts || []).find(a => (a.activityItemId || a.itemId || a.id) == itemId);
         if (newItem) tierData[targetType] = newItem;
     }
 
@@ -2618,3 +2635,125 @@ window.confirmSwap = function(itemId, targetType) {
         showToast('อัปเดตแผนการเดินทางสำเร็จ!', 'success');
     }, 100);
 }
+
+
+window.realLeafletMap = null;
+window.mapRouteLine = null;
+window.mapMarkers = [];
+
+window.openMapModal = function() {
+    if (!currentSmartTripData) return;
+    document.getElementById('real-map-modal').classList.remove('hidden');
+    document.getElementById('real-map-modal').classList.add('flex');
+    
+    const dest = document.getElementById('smart-dest').value;
+    const d = currentSmartTripData[selectedSmartTripTier];
+    
+    const destSelect = document.getElementById('smart-dest');
+    const destName = destSelect ? destSelect.options[destSelect.selectedIndex].text.replace(/ \(.*\)/, '') : dest;
+
+    const airportName = 'สนามบิน ' + destName;
+    const hotelName = d.h.hotelName || d.h.details?.hotelName || 'โรงแรมที่พัก';
+    const actName = d.a1.title || d.a1.details?.title || 'สถานที่ทำกิจกรรม 1';
+    const act2Name = d.a2.title || d.a2.details?.title || 'สถานที่ทำกิจกรรม 2';
+    
+    const gmLink = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(airportName)}&destination=${encodeURIComponent(airportName)}&waypoints=${encodeURIComponent(hotelName)}|${encodeURIComponent(actName)}|${encodeURIComponent(act2Name)}`;
+    document.getElementById('btn-google-maps').href = gmLink;
+    
+    setTimeout(() => {
+        if (!window.realLeafletMap) {
+            window.realLeafletMap = L.map('real-map-container');
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(window.realLeafletMap);
+        }
+        
+        window.mapMarkers.forEach(m => window.realLeafletMap.removeLayer(m));
+        if (window.mapRouteLine) window.realLeafletMap.removeLayer(window.mapRouteLine);
+        window.mapMarkers = [];
+        
+        const knownLocations = {
+            'Hilton Pattaya': [12.9354, 100.8837],
+            'Centara Grand Mirage Beach Resort Pattaya': [12.9575, 100.8856],
+            'The Shore at Katathani': [7.7946, 98.3005],
+            'Hilton London Park Lane': [51.5055, -0.1504],
+            'Swissôtel The Stamford': [1.2933, 103.8532],
+            'ทัวร์สตูดิโอ Harry Potter Warner Bros.': [51.6904, -0.4180],
+            'บัตร Universal Studios Singapore VIP': [1.2540, 103.8238],
+            'พาราเซลลิ่ง พัทยา': [12.9248, 100.8710],
+            'ดำน้ำลึก Scuba Diving พร้อมครูฝึกส่วนตัว': [12.9220, 100.7950],
+            'ล่องเรือยอร์ชคาตามารัน เที่ยวเกาะเฮ-เกาะราชา': [7.7471, 98.3614],
+            'ตั๋วเครื่องบิน': [13.69, 100.75]
+        };
+
+        const cityCoords = {
+            'CNX': [18.7668, 98.9626], 'HKT': [8.1132, 98.3169], 'KBV': [8.0965, 98.9843],
+            'BKK': [13.6900, 100.7501], 'PMI': [39.5517, 2.7388], 'LHR': [51.4700, -0.4543],
+            'CTS': [42.7752, 141.6923], 'NRT': [35.7720, 140.3929], 'SYD': [-33.9399, 151.1753],
+            'CDG': [49.0097, 2.5479], 'PYX': [12.6799, 101.0050]
+        };
+        const airportLatLng = cityCoords[dest] || [13.75, 100.50];
+        
+        const getOffset = (str, scale) => {
+            let hash = 0;
+            if (!str) str = "default";
+            for (let i = 0; i < str.length; i++) hash = (hash << 5) - hash + str.charCodeAt(i);
+            return [(((hash % 100) / 100.0) * scale) - (scale/2), ((((hash >> 2) % 100) / 100.0) * scale) - (scale/2)];
+        };
+
+        const hotelLatLng = knownLocations[hotelName] || [airportLatLng[0] + getOffset(hotelName, 0.15)[0], airportLatLng[1] + getOffset(hotelName, 0.15)[1]];
+        const actLatLng = knownLocations[actName] || [hotelLatLng[0] + getOffset(actName, 0.25)[0], hotelLatLng[1] + getOffset(actName, 0.25)[1]];
+        const act2LatLng = knownLocations[act2Name] || [hotelLatLng[0] + getOffset(act2Name, 0.35)[0], hotelLatLng[1] + getOffset(act2Name, 0.35)[1]];
+        
+        const createIcon = (iconName, colorClass, title) => {
+            return L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div class="flex flex-col items-center group cursor-pointer" style="transform: translate(-50%, -100%); width: max-content;">
+                           <div class="w-10 h-10 ${colorClass} text-white rounded-full flex items-center justify-center font-bold shadow-lg ring-2 ring-white z-50 border-2 border-white transition-transform group-hover:scale-110 group-hover:shadow-xl group-hover:ring-orange-200">
+                               <span class="material-symbols-outlined text-[20px]">${iconName}</span>
+                           </div>
+                           <div class="mt-1.5 bg-white px-3 py-1.5 text-[11px] rounded-xl shadow-lg text-gray-800 font-bold border border-gray-100 whitespace-nowrap transition-colors">${title}</div>
+                       </div>`,
+                iconSize: [0, 0],
+                iconAnchor: [0, 0]
+            });
+        };
+        
+        const bindPopupToMarker = (marker, title, query) => {
+            const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+            const popupContent = `
+                <div class="text-center p-2 min-w-[160px] pb-1">
+                    <p class="font-bold text-gray-800 text-sm mb-3 line-clamp-2">${title}</p>
+                    <a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 bg-[#4285F4] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#3367D6] transition-colors w-full justify-center shadow-md">
+                        <span class="material-symbols-outlined text-[16px]">location_on</span> ดูสถานที่จริง
+                    </a>
+                </div>
+            `;
+            marker.bindPopup(popupContent, { closeButton: true, offset: [0, -45], className: 'custom-popup' });
+        };
+        
+        const m1 = L.marker(airportLatLng, {icon: createIcon('flight_land', 'bg-blue-600', airportName)}).addTo(window.realLeafletMap);
+        const m2 = L.marker(hotelLatLng, {icon: createIcon('hotel', 'bg-orange-500', hotelName)}).addTo(window.realLeafletMap);
+        const m3 = L.marker(actLatLng, {icon: createIcon('local_activity', 'bg-teal-500', actName)}).addTo(window.realLeafletMap);
+        const m4 = L.marker(act2LatLng, {icon: createIcon('photo_camera', 'bg-purple-500', act2Name)}).addTo(window.realLeafletMap);
+        
+        bindPopupToMarker(m1, airportName, airportName);
+        bindPopupToMarker(m2, hotelName, hotelName);
+        bindPopupToMarker(m3, actName, actName);
+        bindPopupToMarker(m4, act2Name, act2Name);
+        
+        window.mapMarkers.push(m1, m2, m3, m4);
+        
+        const latlngs = [airportLatLng, hotelLatLng, actLatLng, act2LatLng, airportLatLng];
+        window.mapRouteLine = L.polyline(latlngs, {color: '#fe932c', weight: 4, dashArray: '8, 8'}).addTo(window.realLeafletMap);
+        
+        window.realLeafletMap.fitBounds(window.mapRouteLine.getBounds(), {padding: [80, 80]});
+        window.realLeafletMap.invalidateSize();
+    }, 150);
+};
+
+window.closeMapModal = function() {
+    document.getElementById('real-map-modal').classList.add('hidden');
+    document.getElementById('real-map-modal').classList.remove('flex');
+};
