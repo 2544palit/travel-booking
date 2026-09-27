@@ -285,6 +285,18 @@ function generateExtendedData() {
 
   // ===== 10 Activities per Destination =====
   const actDb: Record<string, any[]> = {
+    'PMI': [
+      { t: 'ล่องเรือใบคาตามารันชมอ่าวและหาดลับ (Catamaran Cove Tour)', c: 'luxury', d: 'ครึ่งวัน', p: 4500, img: 'https://images.unsplash.com/photo-1555881389-1fc5e6b05202?w=800&q=80', h: ['บุฟเฟต์ทาปาส', 'ดำน้ำตื้น'] },
+      { t: 'ทัวร์ปราสาทเบลล์เวอร์และวิหารปัลมา (Bellver & Cathedral)', c: 'culture', d: '4 ชั่วโมง', p: 2000, img: 'https://images.unsplash.com/photo-1547285149-aebba8140e79?w=800&q=80', h: ['ไกด์ท้องถิ่น', 'ตั๋วแบบ Fast-track'] },
+      { t: 'ดำน้ำตื้นและแพดเดิลบอร์ดอ่าวซานตาปอนซา', c: 'adventure', d: '3 ชั่วโมง', p: 1800, img: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=800&q=80', h: ['อุปกรณ์กีฬาทางน้ำ', 'ครูฝึก'] },
+      { t: 'เที่ยวชมหมู่บ้านประวัติศาสตร์วัลเดมอสซา (Valldemossa)', c: 'romantic', d: 'ครึ่งวัน', p: 2500, img: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=800&q=80', h: ['ชิมขนมท้องถิ่น', 'เดินชมเมือง'] },
+      { t: 'สปอร์ตคาร์ทัวร์เลียบชายฝั่งเมดิเตอร์เรเนียน', c: 'luxury', d: '2 ชั่วโมง', p: 15000, img: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&q=80', h: ['รถเปิดประทุน', 'น้ำมันฟรี'] },
+      { t: 'คลาสชิมไวน์ทาปาสสเปนแบบดั้งเดิม', c: 'culture', d: '3 ชั่วโมง', p: 3200, img: 'https://images.unsplash.com/photo-1515444744559-7be63e1600de?w=800&q=80', h: ['ไวน์พรีเมียม 5 ชนิด', 'ทาปาสเซ็ต'] },
+      { t: 'ทัวร์สำรวจถ้ำดรัช (Drach Caves Underground Lake)', c: 'nature', d: 'ครึ่งวัน', p: 2800, img: 'https://images.unsplash.com/photo-1533692328991-08159ff19fca?w=800&q=80', h: ['คอนเสิร์ตใต้ดิน', 'ล่องเรือในถ้ำ'] },
+      { t: 'ล่องเรือยอชต์ส่วนตัวชมพระอาทิตย์ตก (Sunset Private Yacht)', c: 'romantic', d: '3 ชั่วโมง', p: 12000, img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=800&q=80', h: ['แชมเปญฟรี', 'ลูกเรือส่วนตัว'] },
+      { t: 'เช่าจักรยานขี่ชมเมืองเก่าปัลมา (Palma Old Town Bike Tour)', c: 'family', d: '3 ชั่วโมง', p: 1200, img: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80', h: ['จักรยานไฟฟ้า', 'ไกด์นำทาง'] },
+      { t: 'สปาเมดิเตอร์เรเนียนริมหาดสุดเอ็กซ์คลูซีฟ', c: 'wellness', d: '2 ชั่วโมง', p: 4500, img: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80', h: ['นวดน้ำมันอโรม่า', 'ห้องสปาวิวทะเล'] }
+    ],
     'KBV': [
       { t: 'ปีนผาอ่าวไร่เลย์ (Railay Rock Climbing)', c: 'adventure', d: 'ครึ่งวัน', p: 1500, img: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=800&q=80', h: ['อุปกรณ์ครบ', 'ครูฝึกส่วนตัว'] },
       { t: 'พายเรือคายัคสำรวจป่าโกงกางอ่าวท่าเลน', c: 'nature', d: '3 ชั่วโมง', p: 800, img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80', h: ['ไกด์ท้องถิ่น', 'น้ำดื่มฟรี'] },
@@ -320,6 +332,55 @@ function generateExtendedData() {
       { t: 'สวมกิโมโนเดินชมวัดเซ็นโซจิ อาซากุสะ', c: 'culture', d: '4 ชั่วโมง', p: 1800, img: 'https://images.unsplash.com/photo-1524413840847-07c6ac3a4049?w=800&q=80', h: ['ชุดกิโมโนแท้', 'ช่างภาพส่วนตัว'] },
       { t: 'Warner Bros. Studio Tour Tokyo VIP', c: 'nature', d: 'เต็มวัน', p: 2500, img: 'https://images.unsplash.com/photo-1618944810773-6701bcf5a452?w=800&q=80', h: ['บัตรเข้าชมล่วงหน้า', 'เซ็ตของที่ระลึก'] },
       { t: 'ดินเนอร์เนื้อวากิว A5 วิวตึกระฟ้าชินจูกุ', c: 'luxury', d: '2 ชั่วโมง', p: 5500, img: 'https://images.unsplash.com/photo-1558030006-450675393462?w=800&q=80', h: ['คอร์ส 7 เมนู', 'ที่นั่งริมหน้าต่าง'] }
+    ],
+    'SIN': [
+      { t: 'บัตร Universal Studios Singapore VIP', c: 'nature', d: 'เต็มวัน', p: 3500, img: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&q=80', h: ['Fast Pass ไม่ต้องรอคิว', 'เข้าโซนพิเศษ'] },
+      { t: 'ล่องเรือ River Cruise ชมวิวอ่าวมารีน่า', c: 'culture', d: '1.5 ชั่วโมง', p: 900, img: 'https://images.unsplash.com/photo-1546708681-420228d4d420?w=800&q=80', h: ['ถ่ายรูปกับ Merlion', 'ไกด์ออดิโอ'] },
+      { t: 'ดินเนอร์หรู Marina Bay Sands SkyPark', c: 'luxury', d: '2 ชั่วโมง', p: 5500, img: 'https://images.unsplash.com/photo-1565967511849-76a60a516170?w=800&q=80', h: ['คอร์สอาหารนานาชาติ', 'วิว 360 องศา'] },
+      { t: 'ทัวร์ Gardens by the Bay & Cloud Forest', c: 'nature', d: 'ครึ่งวัน', p: 1200, img: 'https://images.unsplash.com/photo-1506461883276-594a12b11cf3?w=800&q=80', h: ['ตั๋วโดมคู่', 'จุดถ่ายรูปฮิต'] },
+      { t: 'ทัวร์อาหาร Peranakan & ชิม Kaya Toast', c: 'culture', d: '3 ชั่วโมง', p: 1500, img: 'https://images.unsplash.com/photo-1579730248231-5079a0ebf353?w=800&q=80', h: ['ชิมอาหาร 6 อย่าง', 'ไกด์ท้องถิ่น'] }
+    ],
+    'CDG': [
+      { t: 'ตั๋ว VIP Fast-Track พิพิธภัณฑ์ลูฟวร์', c: 'culture', d: 'ครึ่งวัน', p: 2500, img: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80', h: ['ไกด์ประวัติศาสตร์ศิลปะ', 'ไม่ต้องรอคิว'] },
+      { t: 'ล่องเรือแม่น้ำแซน ดินเนอร์แชมเปญใต้หอไอเฟล', c: 'luxury', d: '3 ชั่วโมง', p: 6500, img: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=800&q=80', h: ['ดินเนอร์ 3 คอร์ส', 'ดนตรีสด'] },
+      { t: 'ทัวร์พระราชวังแวร์ซายส์ & สวนดอกไม้ส่วนตัว', c: 'culture', d: 'เต็มวัน', p: 4000, img: 'https://images.unsplash.com/photo-1564501170757-08b3e8c18bd2?w=800&q=80', h: ['รถโค้ชปรับอากาศ', 'ตั๋วเข้าปราสาท'] },
+      { t: 'เวิร์กช็อปอบขนมมาการองต้นตำรับฝรั่งเศส', c: 'culture', d: '2 ชั่วโมง', p: 3200, img: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=800&q=80', h: ['เชฟมืออาชีพ', 'นำขนมกลับบ้าน'] },
+      { t: 'ทัวร์ชิมไวน์ & ชีส ย่านมงมาทร์', c: 'luxury', d: '3 ชั่วโมง', p: 3800, img: 'https://images.unsplash.com/photo-1511556820780-d912e42b4980?w=800&q=80', h: ['ไวน์พรีเมียม 4 ชนิด', 'ไกด์ผู้เชี่ยวชาญ'] }
+    ],
+    'LHR': [
+      { t: 'ลอนดอนอาย VIP Capsule พร้อมแชมเปญ', c: 'luxury', d: '1 ชั่วโมง', p: 3500, img: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80', h: ['ช่องด่วนส่วนตัว', 'วิวแม่น้ำเทมส์'] },
+      { t: 'Afternoon Tea ณ โรงแรม The Ritz', c: 'luxury', d: '2 ชั่วโมง', p: 4500, img: 'https://images.unsplash.com/photo-1577048981600-618dd2db9672?w=800&q=80', h: ['ชาพรีเมียม', 'สโคน & ขนมหวาน'] },
+      { t: 'ทัวร์สตูดิโอ Harry Potter Warner Bros.', c: 'nature', d: 'เต็มวัน', p: 3800, img: 'https://images.unsplash.com/photo-1618944810773-6701bcf5a452?w=800&q=80', h: ['รถบัสไปกลับ', 'บัตรรวมทุกโซน'] },
+      { t: 'ทัวร์ชมพระราชวังบักกิงแฮม & หอนาฬิกาบิ๊กเบน', c: 'culture', d: 'ครึ่งวัน', p: 2200, img: 'https://images.unsplash.com/photo-1529655683823-dcbf3d4f5fc5?w=800&q=80', h: ['ไกด์บรรยาย', 'จุดถ่ายรูปสวยๆ'] },
+      { t: 'ทริป Stone Henge & Bath', c: 'culture', d: 'เต็มวัน', p: 5000, img: 'https://images.unsplash.com/photo-1549429712-404c0dcb2b1f?w=800&q=80', h: ['ไกด์ประวัติศาสตร์', 'ตั๋วเข้าชมครบ'] }
+    ],
+    'SYD': [
+      { t: 'ปีนสะพานซิดนีย์ฮาร์เบอร์ (BridgeClimb)', c: 'adventure', d: '3 ชั่วโมง', p: 8500, img: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&q=80', h: ['ชุดปีนสะพาน', 'ประกาศนียบัตร'] },
+      { t: 'ล่องเรือยอชต์ชมวาฬ & อ่าวซิดนีย์', c: 'nature', d: '4 ชั่วโมง', p: 4500, img: 'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=800&q=80', h: ['บุฟเฟต์อาหารทะเล', 'ผู้เชี่ยวชาญ'] },
+      { t: 'ทัวร์โรงอุปรากรซิดนีย์ (Opera House) รอบพิเศษ', c: 'culture', d: '1.5 ชั่วโมง', p: 1800, img: 'https://images.unsplash.com/photo-1524823126233-ff1f1737e1ab?w=800&q=80', h: ['เข้าชมเบื้องหลัง', 'ไกด์ส่วนตัว'] },
+      { t: 'บินเฮลิคอปเตอร์ชมหุบเขาสามอนงค์ (Blue Mt.)', c: 'luxury', d: 'ครึ่งวัน', p: 12000, img: 'https://images.unsplash.com/photo-1546708681-420228d4d420?w=800&q=80', h: ['รับส่งจากโรงแรม', 'แวะทานอาหาร'] },
+      { t: 'เล่นเซิร์ฟหาดบอนได (Bondi Beach)', c: 'adventure', d: '2 ชั่วโมง', p: 2500, img: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800&q=80', h: ['ครูสอนเซิร์ฟ', 'บอร์ด & ชุด'] }
+    ],
+    'ICN': [
+      { t: 'สวมชุดฮันบกพรีเมียม ถ่ายภาพพระราชวังเคียงบก', c: 'culture', d: '3 ชั่วโมง', p: 1500, img: 'https://images.unsplash.com/photo-1538669715315-16fb5758063f?w=800&q=80', h: ['ชุดฮันบกใหม่', 'ช่างทำผม'] },
+      { t: 'เวิร์กช็อปแต่งหน้า K-Beauty ย่านกังนัม', c: 'culture', d: '2 ชั่วโมง', p: 3500, img: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&q=80', h: ['สอนสไตล์ไอดอล', 'แถมเครื่องสำอาง'] },
+      { t: 'ดินเนอร์เนื้อย่างฮันอู 1++ วิว N Seoul Tower', c: 'luxury', d: '2.5 ชั่วโมง', p: 4800, img: 'https://images.unsplash.com/photo-1558030006-450675393462?w=800&q=80', h: ['คอร์ส 5 เมนู', 'ที่นั่งริมหน้าต่าง'] },
+      { t: 'ตั๋ว VIP สวนสนุก Lotte World', c: 'nature', d: 'เต็มวัน', p: 2200, img: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&q=80', h: ['Fast Pass 3 เครื่องเล่น', 'ตั๋วอควาเรียม'] },
+      { t: 'คลาสเรียนเต้น K-Pop กับครูสอนศิลปิน', c: 'adventure', d: '2 ชั่วโมง', p: 2500, img: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=80', h: ['ห้องซ้อมมาตรฐาน', 'ใบจบหลักสูตร'] }
+    ],
+    'HKT': [
+      { t: 'ล่องเรือยอชต์หรูชมพระอาทิตย์ตก แหลมพรหมเทพ', c: 'luxury', d: 'ครึ่งวัน', p: 4500, img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80', h: ['เครื่องดื่มไม่อั้น', 'ดีเจบนเรือ'] },
+      { t: 'ทริปสปีดโบ๊ทส่วนตัว เกาะพีพี & อ่าวมาหยา', c: 'nature', d: 'เต็มวัน', p: 5500, img: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=800&q=80', h: ['ตั๋วอุทยาน', 'บุฟเฟต์กลางวัน'] },
+      { t: 'ทัวร์เดินชมเมืองเก่า (Old Phuket Town) & คาเฟ่ลับ', c: 'culture', d: '4 ชั่วโมง', p: 1200, img: 'https://images.unsplash.com/photo-1592398501258-356b718914b1?w=800&q=80', h: ['ชิมขนมพื้นเมือง', 'ไกด์ท้องถิ่น'] },
+      { t: 'สปาไข่มุกอันดามันระดับ 5 ดาวริมหาด', c: 'wellness', d: '3 ชั่วโมง', p: 3500, img: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80', h: ['ขัดผิวด้วยผงไข่มุก', 'นวดน้ำมันอุ่น'] },
+      { t: 'สวนน้ำ Andamanda Phuket VIP Cabana', c: 'nature', d: 'เต็มวัน', p: 2800, img: 'https://images.unsplash.com/photo-1582239308696-6e21fb5a8e2c?w=800&q=80', h: ['เต็นท์ส่วนตัว', 'ล็อกเกอร์ VIP'] }
+    ],
+    'CTS': [
+      { t: 'สกีรีสอร์ทนิเซโกะ พร้อมครูฝึกส่วนตัว', c: 'adventure', d: 'เต็มวัน', p: 6500, img: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800&q=80', h: ['อุปกรณ์สกีครบ', 'ครูพูดอังกฤษ/ไทย'] },
+      { t: 'แช่ออนเซ็นธรรมชาติ โจซังเค ท่ามกลางหิมะ', c: 'wellness', d: 'ครึ่งวัน', p: 2500, img: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&q=80', h: ['บ่อส่วนตัว', 'รถรับส่งจากซัปโปโร'] },
+      { t: 'ทัวร์โรงกลั่นวิสกี้ Yoichi & ชิมปูยักษ์ทาระบะ', c: 'culture', d: 'เต็มวัน', p: 4500, img: 'https://images.unsplash.com/photo-1546708681-420228d4d420?w=800&q=80', h: ['ชิมวิสกี้ 3 ชนิด', 'เซ็ตปูยักษ์พรีเมียม'] },
+      { t: 'เวิร์กช็อปทำช็อกโกแลต Shiroi Koibito', c: 'culture', d: '2 ชั่วโมง', p: 1500, img: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=800&q=80', h: ['เพ้นท์คุกกี้', 'ตั๋วเข้าชมโรงงาน'] },
+      { t: 'นั่งเรือตัดน้ำแข็งชม Drift Ice (ฤดูหนาว)', c: 'nature', d: '3 ชั่วโมง', p: 3200, img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80', h: ['จุดถ่ายภาพสวย', 'เสื้อกันหนาวพิเศษ'] }
     ]
   };
 
