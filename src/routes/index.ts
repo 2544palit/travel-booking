@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { AuthService } from '../services/AuthService';
 import { BookingService } from '../services/BookingService';
 import { PaymentService } from '../services/PaymentService';
-import { flights, hotelRooms, promoCodes, reviews, findPromoByCode } from '../data/seedData';
+import { flights, hotelRooms, promoCodes, reviews, findPromoByCode, activities } from '../data/seedData';
 import { Review } from '../models/Review';
 import { BookingItemFactory } from '../patterns/BookingItemFactory';
 
@@ -251,7 +251,17 @@ router.get('/api/search', (req, res, next) => {
     }
 
     // ===== Package Deals (aa+a+aa+a+a+a+a++a+a+aa+Pa+a+ a+a+ 15%) =====
-    if (type === 'all' || type === 'package') {
+    
+    // ===== Activities =====
+    if (type === 'activity' || type === 'all') {
+      let filteredActs = activities;
+      if (normDest) {
+        const mappedCode = CITY_DB.find(c => c.code.toLowerCase() === normDest)?.code.toUpperCase() || normDest.toUpperCase();
+        filteredActs = filteredActs.filter(a => a.destinationCode.toUpperCase() === mappedCode || a.destinationCode.toLowerCase().includes(normDest));
+      }
+      results.activities = filteredActs.map(a => a.toJSON());
+    }
+if (type === 'all' || type === 'package') {
       const PACKAGE_DISCOUNT = 0.15;
       
       // Get hotels based on destination filter (if any)

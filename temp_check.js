@@ -1,282 +1,4 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ค้นหาทริป - Litrip</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#001334',
-            secondary: '#fe932c',
-            tertiary: '#d97706',
-            background: '#f6f7fb',
-            surface: '#ffffff',
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            display: ['"Plus Jakarta Sans"', 'sans-serif'],
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; }
-    h1, h2, h3, h4, h5, h6, .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
-  </style>
-  <script src="/js/app.js?v=2"></script>
-  <script src="/js/api.js?v=2"></script>
-</head>
-<body class="text-secondary pt-20 pb-12">
 
-  <!-- Header -->
-  <header class="fixed w-full top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-[#001334]/5">
-    <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
-      
-      <!-- 1. Logo -->
-      <div class="flex items-center gap-3 cursor-pointer group" onclick="navigateTo('landing')">
-        <div class="w-10 h-10 bg-[#001334] rounded-xl flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
-          <span class="material-symbols-outlined text-[24px]">flight_takeoff</span>
-        </div>
-        <span class="font-display font-extrabold text-xl text-[#001334] tracking-widest mt-1">LITRIP</span>
-      </div>
-
-      <!-- 2. Center Nav Links (Cleaned up, 3 main links) -->
-      <nav class="hidden md:flex items-center gap-6 text-[15px]">
-        <a href="#" onclick="navigateTo('landing')" class="px-6 py-2.5 rounded-xl transition-all duration-300 font-bold text-gray-500 hover:text-[#001334] hover:bg-blue-50">หน้าแรก</a>
-        <a href="#" onclick="navigateTo('search')" class="px-6 py-2.5 rounded-xl transition-all duration-300 font-bold bg-blue-50 text-[#001334] shadow-sm">ค้นหาทริป</a>
-        <a href="#" onclick="navigateTo('dashboard')" class="px-6 py-2.5 rounded-xl transition-all duration-300 font-bold text-gray-500 hover:text-[#001334] hover:bg-blue-50">ทริปของฉัน</a>
-      </nav>
-
-      <!-- 3. Right Utilities -->
-      <div class="flex items-center gap-5">
-        
-        <div class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-full text-[11px] font-bold text-gray-600 cursor-pointer hover:bg-gray-200 transition-colors tracking-wide">
-          <span class="material-symbols-outlined text-[16px]">language</span> THB | TH
-        </div>
-
-        <div class="relative cursor-pointer hover:text-[#fe932c] transition-colors text-gray-700" onclick="navigateTo('trip-details')">
-          <span class="material-symbols-outlined text-[26px]">local_mall</span>
-          <span class="cart-badge absolute -top-1.5 -right-1.5 bg-[#fe932c] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
-        </div>
-        
-        <div class="relative cursor-pointer text-gray-700 hidden sm:block" id="notification-container">
-          <div class="hover:text-[#fe932c] transition-colors relative" onclick="toggleNotifications(event)">
-            <span class="material-symbols-outlined text-[26px]">notifications</span>
-            <div id="notif-badge" class="absolute top-0 right-1 w-2.5 h-2.5 bg-[#fe932c] rounded-full border-2 border-white"></div>
-          </div>
-          
-          <!-- Dropdown Window -->
-          <div id="notif-dropdown" class="absolute top-full right-[-60px] md:right-[-20px] mt-7 w-[340px] md:w-[380px] bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,19,52,0.15)] border border-gray-100 hidden flex-col z-[100] cursor-default before:content-[''] before:absolute before:-top-2 before:right-[68px] md:before:right-[28px] before:w-4 before:h-4 before:bg-white before:rotate-45 before:border-l before:border-t before:border-gray-100" onclick="event.stopPropagation()">
-            <div class="p-4 border-b border-gray-50 flex items-center justify-between bg-white/95 backdrop-blur-md rounded-t-2xl">
-              <div class="flex items-center gap-2">
-                <h3 class="font-extrabold text-[#001334] text-base">การแจ้งเตือน</h3>
-                <span class="bg-[#fe932c] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full" id="notif-count">2</span>
-              </div>
-              <button onclick="markNotifAsRead(event)" class="text-xs font-semibold text-gray-400 hover:text-[#fe932c] transition-colors">อ่านแล้วทั้งหมด</button>
-            </div>
-            
-            <div id="notif-list" class="max-h-[380px] overflow-y-auto flex flex-col bg-gray-50/30">
-              <!-- JS Injected Items -->
-            </div>
-            
-            <div class="p-3 bg-white border-t border-gray-100 text-center rounded-b-2xl shadow-[0_-4px_10px_rgb(0,0,0,0.02)]">
-              <button onclick="navigateTo('dashboard')" class="text-xs font-bold text-[#001334] hover:text-[#fe932c] transition-colors">จัดการการเดินทางทั้งหมด</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Auth Buttons -->
-        <div class="auth-buttons flex gap-2">
-          <button onclick="navigateTo('login')" class="px-5 py-2.5 text-[#001334] font-bold hover:bg-blue-50 rounded-xl transition-colors text-sm">เข้าสู่ระบบ</button>
-          <button onclick="navigateTo('login')" class="px-5 py-2.5 bg-[#001334] text-white font-bold rounded-xl hover:bg-[#001334]/90 shadow-md transition-colors text-sm">สมัครสมาชิก</button>
-        </div>
-
-        <!-- Profile Area -->
-        <div class="profile-area hidden items-center gap-3 cursor-pointer bg-blue-50/60 border border-blue-100/50 rounded-full p-1.5 pl-4 hover:bg-blue-50 transition-colors" onclick="navigateTo('dashboard')">
-          <div class="text-right hidden sm:block leading-tight pt-0.5">
-            <div class="profile-name text-xs font-extrabold text-[#001334]" id="head-user-name">User</div>
-            <div class="profile-tier text-[9px] font-black text-[#b45309] tracking-wider mt-0.5 uppercase flex items-center justify-end gap-0.5" id="head-user-tier"><span class="text-[10px]">👑</span> Member</div>
-          </div>
-          <div class="w-9 h-9 bg-[#001334] rounded-full flex items-center justify-center text-white shadow-sm">
-            <span class="material-symbols-outlined text-[20px]">person</span>
-          </div>
-          <div class="pr-2 text-gray-400 hover:text-red-500 transition-colors flex items-center" onclick="event.stopPropagation(); logout();" title="ออกจากระบบ">
-            <span class="material-symbols-outlined text-[20px]">logout</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </header>
-
-  <!-- Search Bar -->
-  <div class="bg-primary text-white py-6">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="bg-white rounded-xl p-3 flex flex-col md:flex-row gap-2 shadow-lg">
-                  <!-- ต้นทาง (Autocomplete) -->
-          <div class="flex-1 relative">
-            <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 bg-white text-gray-800 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition">
-              <span class="material-symbols-outlined text-gray-400 mr-2">flight_takeoff</span>
-              <input type="text" id="search-origin" placeholder="เลือกต้นทาง (พิมพ์ BKK, Paris...)" autocomplete="off" class="w-full outline-none bg-transparent text-sm font-medium" onfocus="showLocationDropdown('origin')" oninput="filterLocationDropdown('origin')">
-              <input type="hidden" id="search-origin-code" value="">
-              <span class="material-symbols-outlined text-gray-300 text-sm cursor-pointer hover:text-gray-500" onclick="clearLocationInput('origin')">close</span>
-            </div>
-            <div id="dropdown-origin" class="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 max-h-80 overflow-y-auto hidden" style="scrollbar-width:thin;"></div>
-          </div>
-          <!-- ปลายทาง (Autocomplete) -->
-          <div class="flex-1 relative">
-            <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 bg-white text-gray-800 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition">
-              <span class="material-symbols-outlined text-gray-400 mr-2">flight_land</span>
-              <input type="text" id="search-dest" placeholder="เลือกปลายทาง" autocomplete="off" class="w-full outline-none bg-transparent text-sm font-medium" onfocus="showLocationDropdown('dest')" oninput="filterLocationDropdown('dest')">
-              <input type="hidden" id="search-dest-code" value="">
-              <span class="material-symbols-outlined text-gray-300 text-sm cursor-pointer hover:text-gray-500" onclick="clearLocationInput('dest')">close</span>
-            </div>
-            <div id="dropdown-dest" class="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 max-h-80 overflow-y-auto hidden" style="scrollbar-width:thin;"></div>
-          </div>
-        <!-- วันเดินทาง (Date Picker) -->
-        <div class="flex-1 flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-2 bg-white text-gray-800 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition">
-          <span class="material-symbols-outlined text-gray-400 mr-1">calendar_month</span>
-          <input type="date" id="search-date-from" class="w-full outline-none bg-transparent text-sm" >
-          <span class="text-gray-400 text-xs mx-1">ถึง</span>
-          <input type="date" id="search-date-to" class="w-full outline-none bg-transparent text-sm" >
-        </div>
-        <!-- ผู้โดยสาร (Dropdown) -->
-        <div class="w-full md:w-40 flex items-center border border-gray-200 rounded-lg px-3 py-2 bg-white text-gray-800 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition">
-          <span class="material-symbols-outlined text-gray-400 mr-2">group</span>
-          <select id="search-guests" class="w-full outline-none bg-transparent text-sm font-medium cursor-pointer">
-            <option value="1">ผู้ใหญ่ 1 คน</option>
-            <option value="2">ผู้ใหญ่ 2 คน</option>
-            <option value="3">ผู้ใหญ่ 3 คน</option>
-            <option value="4">ผู้ใหญ่ 4 คน</option>
-          </select>
-        </div>
-        <button onclick="executeSearch()" class="bg-tertiary text-white px-6 py-2 rounded-lg font-bold hover:bg-tertiary/90 flex items-center justify-center gap-1 transition shadow-md">
-          <span class="material-symbols-outlined">search</span> ค้นหา
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
-    <!-- Sidebar Filters -->
-    <aside class="w-full md:w-72 flex-shrink-0 space-y-6">
-      <!-- Tabs -->
-      <div class="flex bg-gray-200 rounded-lg p-1">
-        <button id="tab-flights" onclick="filterResults('flight')" class="flex-1 whitespace-nowrap py-1.5 bg-white shadow-sm rounded-md text-sm font-medium text-primary">เที่ยวบิน</button>
-        <button id="tab-packages" onclick="filterResults('package')" class="flex-1 whitespace-nowrap py-1.5 text-gray-600 rounded-md text-sm font-medium hover:text-primary relative">แพ็กเกจ <span class="absolute -top-2 -right-0 bg-[#d97706] text-white text-[8px] font-bold px-1 py-0.5 rounded-full leading-none">ลด15%</span></button>
-        <button id="tab-hotels" onclick="filterResults('hotel')" class="flex-1 whitespace-nowrap py-1.5 text-gray-600 rounded-md text-sm font-medium hover:text-primary">โรงแรม</button>
-        <button id="tab-activities" onclick="filterResults('activity')" class="flex-1 whitespace-nowrap py-1.5 text-gray-600 rounded-md text-sm font-medium hover:text-primary">กิจกรรม</button>
-      </div>
-
-      <div class="bg-white rounded-xl shadow-sm p-5 space-y-6 border border-gray-100">
-        <div class="flex items-center justify-between">
-          <h3 class="font-bold text-gray-800">ตัวกรอง</h3>
-          <button onclick="resetFilters()" class="text-xs text-primary hover:underline">ล้างทั้งหมด</button>
-        </div>
-        
-        <div>
-          <div class="flex justify-between items-center mb-3">
-            <h4 id="price-label-text" class="font-medium text-sm text-gray-700">ช่วงราคา (ต่อคืน/เที่ยว)</h4>
-            <span id="price-display" class="text-xs font-bold text-tertiary">฿20,000</span>
-          </div>
-          <input type="range" id="filter-price" class="w-full accent-primary" min="0" max="20000" value="20000" oninput="updatePriceDisplay(); applyFilters()">
-          <div class="flex justify-between text-xs text-gray-500 mt-2">
-            <span>฿0</span><span id="price-max-label">฿20,000+</span>
-          </div>
-        </div>
-
-        <div id="filter-flight-options">
-          <h4 class="font-medium text-sm text-gray-700 mb-3">สายการบิน</h4>
-          <div class="space-y-2" id="airline-checkboxes">
-            <!-- Dynamic checkboxes -->
-          </div>
-        </div>
-        
-        <div id="filter-hotel-options" style="display:none;">
-          <h4 class="font-medium text-sm text-gray-700 mb-3">ระดับดาว</h4>
-          <div class="space-y-2" id="star-checkboxes">
-            <!-- Dynamic checkboxes -->
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Results Area -->
-    <main class="flex-1">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold font-display text-gray-800"><span id="results-count">กำลังโหลด...</span> รายการ</h2>
-        <select id="sort-select" onchange="applyFilters()" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm outline-none">
-          <option value="recommend">เรียงตาม: แนะนำ</option>
-          <option value="price_asc">ราคา: ต่ำไปสูง</option>
-          <option value="price_desc">ราคา: สูงไปต่ำ</option>
-        </select>
-      </div>
-
-      <!-- Results Grid/List -->
-      <div id="results-container" class="space-y-4">
-        <!-- Loader -->
-        <div class="flex justify-center py-12"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>
-      </div>
-      
-      <!-- Details Modal Overlay -->
-      <div id="details-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col transform scale-95 transition-transform duration-300" id="details-modal-content">
-          <!-- Header -->
-          <div class="flex justify-between items-center p-6 border-b border-gray-100">
-            <h2 class="text-xl font-bold text-gray-800 font-display flex items-center gap-2" id="modal-title">รายละเอียด</h2>
-            <button onclick="closeDetailsModal()" class="text-gray-400 hover:text-red-500 transition">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </div>
-          <!-- Body -->
-          <div class="p-6 overflow-y-auto flex-1 custom-scrollbar" id="modal-body">
-            <!-- Dynamic Content Here -->
-          </div>
-          <!-- Footer -->
-          <div class="p-6 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row justify-between items-center rounded-b-2xl gap-4 sm:gap-0">
-            <div class="text-center sm:text-left">
-              <p class="text-xs text-gray-500 mb-1" id="modal-price-label">ราคารวม (ต่อท่าน)</p>
-              <h3 class="text-2xl font-bold text-tertiary font-display" id="modal-price">฿0</h3>
-            </div>
-            <button id="modal-action-btn" class="w-full sm:w-auto bg-primary hover:bg-secondary text-white px-8 py-3 rounded-lg font-bold transition shadow-md flex items-center justify-center gap-2">
-              <span class="material-symbols-outlined" style="font-size: 20px">shopping_cart</span>
-              เพิ่มลงตะกร้า
-            </button>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <!-- Floating Cart Summary -->
-  <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40 transform transition-transform duration-300" id="floating-cart">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <div class="relative">
-          <span class="material-symbols-outlined text-3xl text-primary">shopping_cart</span>
-          <span class="cart-badge absolute -top-1 -right-1 bg-tertiary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-gray-500">ยอดรวมตะกร้า (<span class="cart-count">0</span> รายการ)</p>
-          <p class="text-xl font-bold text-gray-800" id="cart-total-float">฿0</p>
-        </div>
-      </div>
-      <button onclick="goToCheckout()" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg font-bold shadow-md transition flex items-center gap-2">
-        ดูตะกร้าและชำระเงิน <span class="material-symbols-outlined">shopping_cart_checkout</span>
-      </button>
-    </div>
-  </div>
-
-  <script>
     let currentType = 'flight';
     let allData = { flight: [], hotel: [], package: [], activity: [] };
     let locationData = null;
@@ -984,17 +706,9 @@
           `;
         } else if (currentType === 'activity') {
           const a = item;
-          const catMap = {
-            'luxury': '👑 ลักชูรี & ไพรเวท',
-            'culture': '🏛️ ศิลปวัฒนธรรม',
-            'adventure': '🧗‍♂️ ผจญภัย',
-            'wellness': '🌿 สปา & สุขภาพ',
-            'nature': '🌊 ธรรมชาติ & ชายหาด'
-          };
-          const displayCategory = catMap[a.category] || a.category;
           div.innerHTML = `
             <div class="md:w-64 h-48 md:h-full flex-shrink-0 relative">
-              <img src="${a.imageUrl}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80';" class="w-full h-full object-cover" alt="${a.title}">
+              <img src="${a.imageUrl}" class="w-full h-full object-cover" alt="${a.title}">
               <div class="absolute top-3 left-3 bg-[#001334]/80 backdrop-blur text-white text-xs px-2 py-1 rounded font-medium flex items-center gap-1">
                 <span class="material-symbols-outlined text-[14px] text-[#fe932c]">star</span>
                 ${a.rating.toFixed(1)} (${a.reviewsCount})
@@ -1004,7 +718,7 @@
             <div class="p-5 flex-1 flex flex-col justify-between">
               <div>
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="text-[10px] font-bold text-gray-400 tracking-widest">${displayCategory}</span>
+                  <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${a.category}</span>
                   <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
                   <span class="text-[10px] font-bold text-[#fe932c]"><span class="material-symbols-outlined text-[12px] align-middle mr-0.5">schedule</span>${a.duration}</span>
                 </div>
@@ -1018,8 +732,8 @@
                   <div class="text-xs text-gray-500 mb-0.5">ราคาต่อท่าน</div>
                   <div class="text-2xl font-bold text-[#fe932c] font-display">฿${a.price.toLocaleString()}</div>
                 </div>
-                <button onclick="event.stopPropagation(); openDetailsModal('${a.itemId}')" class="bg-[#001334] hover:bg-blue-900 text-white font-bold py-2 px-5 rounded-lg shadow-md transition text-sm flex items-center gap-2">
-                  <span class=\"material-symbols-outlined text-[18px]\">local_activity</span> จองกิจกรรม / บริการเสริม
+                <button onclick="event.stopPropagation(); addToCart({ type: 'activity', itemId: '${a.itemId}', price: ${a.price}, details: ${JSON.stringify(a).replace(/"/g, '&quot;')} })" class="bg-[#001334] hover:bg-blue-900 text-white font-bold py-2 px-5 rounded-lg shadow-md transition text-sm flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[18px]">local_activity</span> จองกิจกรรม
                 </button>
               </div>
             </div>
@@ -1307,7 +1021,7 @@
             baggage: 0,
             baggageLabel: 'ฟรี 7 กก.',
             roomType: 'standard', 
-            roomPrice: item.pricePerNight || (item.totalPrice / (item.details?.nights || 1)) || 0, 
+            roomPrice: item.pricePerNight || (item.totalPrice / (item.details.nights || 1)), 
             pkgSeats: {},
             pkgBaggage: {},
             hotelAddons: {},
@@ -1539,7 +1253,7 @@
 
         body.innerHTML = progressHtml + stepContentHtml;
 
-      } else if (currentType === 'hotel') {
+      } else {
         content.classList.add('max-w-2xl');
         title.innerHTML = `<span class="material-symbols-outlined text-primary">hotel</span> รายละเอียดโรงแรม และเลือกบริการเสริม`;
         actionBtn.innerHTML = `เพิ่มลงตะกร้า <span class="material-symbols-outlined text-[18px]">shopping_cart</span>`;
@@ -1599,76 +1313,8 @@
           ${roomsHtml}
           ${addonsHtml}
         `;
-      } else if (currentType === 'activity') {
-        content.classList.add('max-w-4xl');
-        title.innerHTML = `<span class="material-symbols-outlined text-[#fe932c]">local_activity</span> รายละเอียดกิจกรรม และบริการเสริม`;
-        actionBtn.innerHTML = `เพิ่มลงตะกร้า <span class="material-symbols-outlined text-[18px]">shopping_cart</span>`;
-        actionBtn.className = "w-full sm:w-auto bg-[#fe932c] hover:bg-[#e07f23] text-white px-8 py-3 rounded-lg font-bold transition shadow-md flex items-center justify-center gap-2";
-        
-        currentSelection.activityAddons = {};
-        
-        const hList = (item.details?.highlights || item.highlights || []).map(h => `<li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-[18px]">check_circle</span> ${h}</li>`).join('');
-        const iList = (item.details?.inclusions || item.inclusions || []).map(inc => `<li class="flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-blue-500 text-[16px]">done</span> ${inc}</li>`).join('');
-        const tList = (item.details?.itinerary || item.itinerary || []).map(it => `<div class="flex gap-4 mb-3"><div class="flex flex-col items-center"><div class="w-2.5 h-2.5 rounded-full bg-primary mt-1.5"></div><div class="flex-1 w-[1px] bg-gray-300 my-1"></div></div><p class="text-sm text-gray-700 pb-2">${it}</p></div>`).join('');
-        
-        const addons = item.details?.addOns || item.addOns || [];
-        let addonsHtml = addons.length ? '<h4 class="font-bold text-gray-800 mb-3 border-b pb-2">🎁 บริการเสริมพิเศษ (Add-ons)</h4>' : '';
-        addons.forEach(ad => {
-          addonsHtml += `
-            <label class="flex items-center justify-between p-3 border border-gray-200 rounded-lg mb-2 cursor-pointer hover:bg-blue-50/50 transition">
-              <div class="flex items-center gap-3">
-                <input type="checkbox" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary" 
-                  onchange="toggleActivityAddon('${ad.id}', ${ad.price}, this.checked)">
-                <div class="flex flex-col">
-                  <span class="font-medium text-gray-800 text-sm flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-gray-500">${ad.icon}</span> ${ad.name}</span>
-                </div>
-              </div>
-              <span class="font-bold text-tertiary text-sm">+฿${ad.price.toLocaleString()}</span>
-            </label>
-          `;
-        });
-        
-        body.innerHTML = `
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-            <div>
-              <div class="h-64 rounded-xl overflow-hidden mb-4 shadow-sm relative">
-                <img src="${item.imageUrl || item.details?.imageUrl}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80';" class="w-full h-full object-cover">
-                <div class="absolute top-3 right-3 bg-white/95 backdrop-blur px-2 py-1 rounded text-xs font-bold text-primary shadow-sm flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[14px] text-[#fe932c]">star</span> ${(item.rating || 4.5).toFixed(1)}
-                </div>
-              </div>
-              <h3 class="text-xl font-bold text-primary mb-2 leading-tight">${item.title || item.details?.title}</h3>
-              <div class="flex items-center gap-2 text-xs text-gray-500 mb-4">
-                <span class="bg-gray-100 px-2 py-1 rounded font-medium">${item.category || item.details?.category}</span>
-                <span class="material-symbols-outlined text-[14px]">schedule</span> ${item.duration || item.details?.duration}
-              </div>
-              
-              <h4 class="font-bold text-gray-800 mb-2 border-b pb-2">✨ ไฮไลต์กิจกรรม</h4>
-              <ul class="text-sm text-gray-600 mb-4 space-y-1">${hList}</ul>
-              
-              <h4 class="font-bold text-gray-800 mb-2 border-b pb-2">✅ สิ่งที่รวมในแพ็กเกจ</h4>
-              <ul class="text-sm text-gray-600 mb-4 space-y-1">${iList}</ul>
-            </div>
-            
-            <div class="bg-gray-50 p-5 rounded-xl border border-gray-100">
-              <h4 class="font-bold text-gray-800 mb-4 border-b pb-2">🕒 กำหนดการ (Itinerary)</h4>
-              <div class="mb-6">${tList}</div>
-              
-              ${addonsHtml}
-            </div>
-          </div>
-        `;
-        
-        window.toggleActivityAddon = (id, adPrice, isChecked) => {
-          if(isChecked) currentSelection.activityAddons[id] = adPrice;
-          else delete currentSelection.activityAddons[id];
-          
-          let total = item.price || item.totalPrice;
-          Object.values(currentSelection.activityAddons).forEach(p => total += p);
-          currentDisplayPrice = total;
-          document.getElementById('modal-price').textContent = '฿' + total.toLocaleString();
-        };
       }
+      
       if(!isReopen && currentType === 'hotel') {
          calculateHotelPrice(); 
       } else if (isReopen && currentType === 'hotel') {
@@ -1741,10 +1387,10 @@
       const itemData = allData[type].find(i => i.itemId === id);
       if(!itemData) return;
       
-      const guestsStr = document.getElementById('search-guests')?.value || '1';
+      const guestsStr = document.getElementById('search-guests').value;
       const guests = parseInt(guestsStr) || 1;
       
-      let unitPrice = itemData.totalPrice || itemData.price || 0;
+      let unitPrice = itemData.totalPrice;
       let finalItemDetails = { ...itemData.details };
       
       const hotelAddonsDict = { 'insurance': 'ประกันเดินทาง', 'breakfast': 'อาหารเช้า', 'airport_transfer': 'รถรับส่ง', 'spa': 'สปา', 'late_checkout': 'เลทเช็คเอาท์' };
@@ -1774,27 +1420,6 @@
           checkInDate: checkIn,
           checkOutDate: checkOut,
           nights: currentModalNights
-        };
-      } else if (type === 'activity') {
-        let addonsTotal = 0;
-        let addonsArr = [];
-        
-        if(currentSelection.activityAddons) {
-            Object.entries(currentSelection.activityAddons).forEach(([aid, aprice]) => {
-                addonsTotal += aprice;
-                const actAddon = (itemData.details?.addOns || itemData.addOns || []).find(x => x.id === aid);
-                if(actAddon) addonsArr.push(actAddon.name);
-            });
-        }
-        
-        unitPrice += addonsTotal;
-        
-        finalItemDetails = {
-          title: itemData.title || itemData.details?.title,
-          category: itemData.category || itemData.details?.category,
-          duration: itemData.duration || itemData.details?.duration,
-          imageUrl: itemData.imageUrl || itemData.details?.imageUrl,
-          selectedAddOns: addonsArr
         };
       } else {
         if(currentSelection.seat) unitPrice += 150; 
@@ -1958,19 +1583,4 @@
       if(getCart().length === 0) return;
       navigateTo('trip-details');
     }
-  </script>
-  <style>
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    /* สไตล์สำหรับซ่อน scrollbar ในการเลื่อน */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-  </style>
-</body>
-</html>
+  

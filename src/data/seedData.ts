@@ -177,6 +177,32 @@ export const bookings: Booking[] = [];
 export const trips: Trip[] = [];
 export const reviews: Review[] = [];
 
+export class Activity {
+  public itemId: string;
+  public type: 'activity' = 'activity';
+  public addOns?: any[];
+  public itinerary?: string[];
+  public inclusions?: string[];
+  constructor(
+    public title: string,
+    public destinationCode: string,
+    public category: string,
+    public duration: string,
+    public price: number,
+    public rating: number,
+    public reviewsCount: number,
+    public imageUrl: string,
+    public highlights: string[],
+    public vipDiscountPercent: number = 0,
+    id?: string
+  ) {
+    this.itemId = id || `act-${Date.now()}-${Math.floor(Math.random()*1000)}`;
+  }
+  toJSON() { return { ...this }; }
+}
+export const activities: Activity[] = [];
+
+
 // ===== HELPER FUNCTIONS =====
 export function findTravelerById(id: string): Traveler | undefined {
   return travelers.find(t => t.id === id);
@@ -204,6 +230,7 @@ export function findPromoByCode(code: string): PromotionCode | undefined {
 
 // ===== AUTO GENERATOR (1-Month Data) =====
 function generateExtendedData() {
+
   const startDate = new Date('2026-09-01T00:00:00Z');
   const endDate = new Date('2026-12-31T00:00:00Z');
 
@@ -254,6 +281,103 @@ function generateExtendedData() {
     'QF': 'Qantas', 'JQ': 'Jetstar',
     'AI': 'Air India', '6E': 'IndiGo'
   };
+
+
+  // ===== 10 Activities per Destination =====
+  const actDb: Record<string, any[]> = {
+    'KBV': [
+      { t: 'ปีนผาอ่าวไร่เลย์ (Railay Rock Climbing)', c: 'adventure', d: 'ครึ่งวัน', p: 1500, img: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=800&q=80', h: ['อุปกรณ์ครบ', 'ครูฝึกส่วนตัว'] },
+      { t: 'พายเรือคายัคสำรวจป่าโกงกางอ่าวท่าเลน', c: 'nature', d: '3 ชั่วโมง', p: 800, img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80', h: ['ไกด์ท้องถิ่น', 'น้ำดื่มฟรี'] },
+      { t: 'ดำน้ำลึก Scuba หมู่เกาะพีพี & ถ้ำไวกิ้ง', c: 'adventure', d: 'เต็มวัน', p: 3500, img: 'https://images.unsplash.com/photo-1544550581-5f7ceaf7f992?w=800&q=80', h: ['อุปกรณ์ดำน้ำ', 'อาหารกลางวัน'] },
+      { t: 'ทริป 4 เกาะ ทะเลแหวกและเกาะปอดะ', c: 'nature', d: 'เต็มวัน', p: 1200, img: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=800&q=80', h: ['สปีดโบ๊ท', 'อาหารกลางวันบนเกาะ'] },
+      { t: 'ล่องเรือหางยาวโบราณพรีเมียมชมพระอาทิตย์ตก', c: 'luxury', d: '4 ชั่วโมง', p: 4500, img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=800&q=80', h: ['ไวน์ฟรี', 'คานาเป้', 'เรือส่วนตัว'] },
+      { t: 'สปาธรรมชาติแช่น้ำตกร้อน & สระมรกต', c: 'wellness', d: 'ครึ่งวัน', p: 1000, img: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80', h: ['รถรับส่ง', 'ตั๋วเข้าชม'] },
+      { t: 'SUP Board ยามเช้ากลางทะเลอันดามัน', c: 'nature', d: '2 ชั่วโมง', p: 600, img: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?w=800&q=80', h: ['บอร์ด SUP', 'ถ่ายภาพโดรน'] },
+      { t: 'เดินป่าพิชิตเขาหงอนนาค ชมวิว 360 องศา', c: 'adventure', d: '5 ชั่วโมง', p: 700, img: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80', h: ['ไกด์นำทาง', 'น้ำดื่ม & ขนม'] },
+      { t: 'คลาสเรียนทำอาหารไทยปักษ์ใต้', c: 'culture', d: '3 ชั่วโมง', p: 1500, img: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80', h: ['เดินตลาดเช้า', 'ทำอาหาร 4 เมนู'] },
+      { t: 'สปาอโรมาเธอราพีริมหาด (Luxury Spa)', c: 'wellness', d: '2 ชั่วโมง', p: 2500, img: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80', h: ['ห้องส่วนตัว', 'น้ำมันออร์แกนิก'] }
+    ],
+    'CNX': [
+      { t: 'โหนสลิง Zipline ข้ามหุบเขาและยอดไม้', c: 'adventure', d: 'ครึ่งวัน', p: 2200, img: 'https://images.unsplash.com/photo-1533692328991-08159ff19fca?w=800&q=80', h: ['อุปกรณ์เซฟตี้', '30 ฐาน'] },
+      { t: 'ล่องแก่งเรือยางแม่น้ำแม่แตง', c: 'adventure', d: 'ครึ่งวัน', p: 1800, img: 'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?w=800&q=80', h: ['ไกด์ผู้เชี่ยวชาญ', 'อาหารกลางวัน'] },
+      { t: 'ขับรถ ATV ตะลุยดอยออฟโรด', c: 'adventure', d: '3 ชั่วโมง', p: 1600, img: 'https://images.unsplash.com/photo-1596328546171-77e37b5f8ce2?w=800&q=80', h: ['ATV 150cc', 'อุปกรณ์ป้องกัน'] },
+      { t: 'ศูนย์อนุรักษ์ช้างเชิงจริยธรรม (VIP)', c: 'nature', d: 'เต็มวัน', p: 3500, img: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800&q=80', h: ['อาบน้ำช้าง', 'ถ่ายรูปส่วนตัว'] },
+      { t: 'เดินป่ากิ่วแม่ปาน ดอยอินทนนท์', c: 'nature', d: 'เต็มวัน', p: 1200, img: 'https://images.unsplash.com/photo-1580133318919-61f2f8da8eb4?w=800&q=80', h: ['รถตู้ VIP', 'ไกด์ท้องถิ่น'] },
+      { t: 'ขึ้นบอลลูนลมร้อนชมพระอาทิตย์ขึ้น', c: 'luxury', d: '3 ชั่วโมง', p: 8500, img: 'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=800&q=80', h: ['แชมเปญเบรกฟาสต์', 'ใบรับรอง'] },
+      { t: 'เวิร์กช็อปดริปกาแฟออร์แกนิก ดอยแม่กำปอง', c: 'culture', d: 'ครึ่งวัน', p: 900, img: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=800&q=80', h: ['ชิมกาแฟ 3 ชนิด', 'ของว่างล้านนา'] },
+      { t: 'แช่น้ำพุร้อนออนเซ็นธรรมชาติสันกำแพง', c: 'wellness', d: 'ครึ่งวัน', p: 800, img: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80', h: ['ห้องแช่ส่วนตัว', 'ต้มไข่น้ำพุร้อน'] },
+      { t: 'ทัวร์ไหว้พระวัดลับกลางป่า (วัดอุโมงค์ & ผาลาด)', c: 'culture', d: '4 ชั่วโมง', p: 1000, img: 'https://images.unsplash.com/photo-1592398501258-356b718914b1?w=800&q=80', h: ['รถรับส่ง', 'ไกด์ส่วนตัว'] },
+      { t: 'ขันโตกดินเนอร์ & การแสดงล้านนาโบราณ', c: 'culture', d: '3 ชั่วโมง', p: 850, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80', h: ['บุฟเฟต์อาหารเหนือ', 'ชมการแสดง 1.5 ชม.'] }
+    ],
+    'NRT': [
+      { t: 'ทัวร์เฮลิคอปเตอร์ส่วนตัวเหนือน่านฟ้าโตเกียว', c: 'luxury', d: '30 นาที', p: 15000, img: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80', h: ['ชมวิวโตเกียวทาวเวอร์', 'ถ่ายภาพมุมสูง'] },
+      { t: 'TeamLab Planets VIP Fast Pass', c: 'culture', d: '2 ชั่วโมง', p: 1200, img: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&q=80', h: ['ช่องทางพิเศษ', 'ไร้ขีดจำกัดเวลา'] },
+      { t: 'ล่องเรือยากาตะบูเนะ ดินเนอร์เทมปุระ', c: 'luxury', d: '2.5 ชั่วโมง', p: 3500, img: 'https://images.unsplash.com/photo-1524413840847-07c6ac3a4049?w=800&q=80', h: ['ดินเนอร์ชุดใหญ่', 'ชมอ่าวโตเกียว'] },
+      { t: 'ขับโกคาร์ทชมเมืองโตเกียว (Street Go-Kart)', c: 'adventure', d: '2 ชั่วโมง', p: 2500, img: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&q=80', h: ['ชุดแฟนซี', 'ไกด์นำทาง'] },
+      { t: 'ทัวร์ตลาดปลาโทโยสึ & คลาสทำซูชิ', c: 'culture', d: 'ครึ่งวัน', p: 4000, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=800&q=80', h: ['เชฟซูชิส่วนตัว', 'วัตถุดิบพรีเมียม'] },
+      { t: 'ทัวร์ชมการฝึกซ้อมซูโม่ VIP', c: 'culture', d: '3 ชั่วโมง', p: 3800, img: 'https://images.unsplash.com/photo-1526698905402-e13b8fb35fa9?w=800&q=80', h: ['ถ่ายรูปกับนักซูโม่', 'ไกด์พูดอังกฤษ'] },
+      { t: 'ช้อปปิ้งกินซ่าพร้อม Personal Stylist', c: 'luxury', d: 'ครึ่งวัน', p: 6000, img: 'https://images.unsplash.com/photo-1481437156560-3205f6a55735?w=800&q=80', h: ['ผู้เชี่ยวชาญแฟชั่น', 'รถลิมูซีนรับส่ง'] },
+      { t: 'สวมกิโมโนเดินชมวัดเซ็นโซจิ อาซากุสะ', c: 'culture', d: '4 ชั่วโมง', p: 1800, img: 'https://images.unsplash.com/photo-1524413840847-07c6ac3a4049?w=800&q=80', h: ['ชุดกิโมโนแท้', 'ช่างภาพส่วนตัว'] },
+      { t: 'Warner Bros. Studio Tour Tokyo VIP', c: 'nature', d: 'เต็มวัน', p: 2500, img: 'https://images.unsplash.com/photo-1618944810773-6701bcf5a452?w=800&q=80', h: ['บัตรเข้าชมล่วงหน้า', 'เซ็ตของที่ระลึก'] },
+      { t: 'ดินเนอร์เนื้อวากิว A5 วิวตึกระฟ้าชินจูกุ', c: 'luxury', d: '2 ชั่วโมง', p: 5500, img: 'https://images.unsplash.com/photo-1558030006-450675393462?w=800&q=80', h: ['คอร์ส 7 เมนู', 'ที่นั่งริมหน้าต่าง'] }
+    ]
+  };
+
+  const DEFAULT_ACTS = [
+    { t: 'ทัวร์ไฮไลต์รอบเมืองแบบเอ็กซ์คลูซีฟ (Private Tour)', c: 'culture', d: 'ครึ่งวัน', p: 2000, img: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80', h: ['ไกด์ท้องถิ่น', 'รถส่วนตัว'] },
+    { t: 'ดินเนอร์หรูบนเรือสำราญ ชมพระอาทิตย์ตกดิน', c: 'luxury', d: '3 ชั่วโมง', p: 4500, img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80', h: ['บุฟเฟต์นานาชาติ', 'ไวน์ฟรี'] },
+    { t: 'เดินป่าสำรวจธรรมชาติและน้ำตก', c: 'adventure', d: 'เต็มวัน', p: 1500, img: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80', h: ['อาหารกลางวัน', 'อุปกรณ์เดินป่า'] },
+    { t: 'แพ็กเกจสปาอโรมาและออนเซ็นระดับ 5 ดาว', c: 'wellness', d: '3 ชั่วโมง', p: 3000, img: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80', h: ['นวด 120 นาที', 'ห้องส่วนตัว'] },
+    { t: 'ทัวร์ชิมสตรีทฟู้ดมิชลิน พร้อมไกด์ผู้เชี่ยวชาญ', c: 'culture', d: '3 ชั่วโมง', p: 1200, img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80', h: ['ชิมอาหาร 5 ร้าน', 'ไกด์ผู้เชี่ยวชาญ'] },
+    { t: 'ทัวร์เฮลิคอปเตอร์ส่วนตัว ชมวิวเมืองมุมสูง 360 องศา', c: 'luxury', d: '30 นาที', p: 12000, img: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80', h: ['มุมมองแบบเบิร์ดอาย', 'VIP Lounge'] },
+    { t: 'ทัวร์พิพิธภัณฑ์ประวัติศาสตร์ ช่องทางพิเศษ Fast-Track', c: 'culture', d: 'ครึ่งวัน', p: 1800, img: 'https://images.unsplash.com/photo-1524413840847-07c6ac3a4049?w=800&q=80', h: ['ช่องทางพิเศษ', 'เครื่องบรรยายเสียง'] },
+    { t: 'ดำน้ำลึก Scuba Diving พร้อมครูฝึกส่วนตัว', c: 'adventure', d: 'ครึ่งวัน', p: 2500, img: 'https://images.unsplash.com/photo-1544550581-5f7ceaf7f992?w=800&q=80', h: ['ครูฝึกส่วนตัว', 'อุปกรณ์ครบ'] },
+    { t: 'บัตรสวนสนุกยอดนิยม แพ็กเกจ VIP ไม่ต้องรอคิว', c: 'nature', d: 'เต็มวัน', p: 4000, img: 'https://images.unsplash.com/photo-1505993597083-3bd19fd75e7a?w=800&q=80', h: ['Fast Pass', 'โซนพัก VIP'] },
+    { t: 'ล่องเรือยอชต์ส่วนตัว ดำน้ำชมเกาะระดับ VIP', c: 'luxury', d: 'เต็มวัน', p: 8500, img: 'https://images.unsplash.com/photo-1569263979104-865ab7cd8d17?w=800&q=80', h: ['เรือยอชต์ส่วนตัว', 'แชมเปญฟรี'] }
+  ];
+
+  // We will populate activities dynamically based on ROUTES
+  if (activities.length === 0) {
+    const ALL_DEST = Array.from(new Set([...ROUTES.map(r => r.dest), ...nonBkkCities.map(r => r.code), 'BKK', 'HKT']));
+    ALL_DEST.forEach((dest, dIdx) => {
+      const list = actDb[dest] || DEFAULT_ACTS;
+      list.forEach((act, i) => {
+          const newAct = new Activity(
+            act.t, dest, act.c, act.d, act.p,
+            4.5 + (Math.random() * 0.5),
+            Math.floor(Math.random() * 500) + 50,
+            act.img, act.h,
+            act.c === 'luxury' ? 10 : 0, 
+            `act-${dest}-${i}`
+          );
+          
+          newAct.addOns = [
+            { id: 'trans', name: 'รถลีมูซีนส่วนตัว รับ-ส่งจากโรงแรม', price: 3500, icon: 'airport_shuttle' },
+            { id: 'photo', name: 'ช่างภาพมืออาชีพส่วนตัว (พร้อมวิดีโอโดรน 4K)', price: 4900, icon: 'photo_camera' },
+            { id: 'guide', name: 'ไกด์นำเที่ยวส่วนตัว (Thai/Eng)', price: 2500, icon: 'record_voice_over' },
+            { id: 'wine', name: 'เซ็ตแชมเปญพรีเมียม และคานาเป้', price: 1800, icon: 'wine_bar' },
+            { id: 'insure', name: 'ประกันภัยยกเลิกฟรีแบบไร้เงื่อนไข', price: 500, icon: 'health_and_safety' }
+          ];
+          
+          newAct.itinerary = [
+            '10:00 - บริการรถรับจากโรงแรมที่พัก (หากเลือกบริการเสริม)',
+            '10:30 - ลงทะเบียนที่เลานจ์ VIP และรับฟังคำแนะนำความปลอดภัย',
+            '11:00 - เริ่มต้นกิจกรรมสุดเอ็กซ์คลูซีฟ (Private Experience)',
+            '12:30 - แวะพักผ่อนและรับประทานของว่าง/เครื่องดื่ม',
+            '13:30 - สิ้นสุดกิจกรรม และเดินทางกลับโรงแรมโดยสวัสดิภาพ'
+          ];
+          
+          newAct.inclusions = [
+            'ประกันอุบัติเหตุความคุ้มครองสูงสุด 1,000,000 บาท',
+            'อุปกรณ์เซฟตี้มาตรฐานสากล',
+            'เครื่องดื่มต้อนรับ (Welcome Drink)',
+            'พนักงานดูแลส่วนตัว (Personal Concierge)'
+          ];
+          
+          activities.push(newAct);
+      });
+    });
+  }
 
   const DIRECT_INTL_ROUTES: any[] = [];
   for (let i = 0; i < nonBkkCities.length; i++) {

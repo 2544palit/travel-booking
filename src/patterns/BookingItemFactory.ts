@@ -35,6 +35,18 @@ export interface HotelData {
   itemId?: string;
 }
 
+
+export interface ActivityData {
+  type: 'activity';
+  title: string;
+  category: string;
+  duration: string;
+  unitPrice: number;
+  totalPrice: number;
+  itemId?: string;
+  [key: string]: any;
+}
+
 export interface VipData {
   type: 'vip';
   plan: string;
@@ -43,7 +55,7 @@ export interface VipData {
   itemId?: string;
 }
 
-export type BookingItemData = FlightData | HotelData | VipData;
+export type BookingItemData = FlightData | HotelData | VipData | ActivityData;
 
 export class BookingItemFactory {
   /**
@@ -58,6 +70,8 @@ export class BookingItemFactory {
         return BookingItemFactory.createHotel(data);
       case 'vip':
         return BookingItemFactory.createVip(data);
+      case 'activity':
+        return data as any;
       default:
         throw new Error(`Unknown booking item type: ${(data as any).type}`);
     }
