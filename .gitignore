@@ -6,3 +6,9 @@ dist
 # Added by cleanup
 apikey.env
 *.zip
+
+# Temporary debug/check files (auto-generated, safe to delete)
+temp_*.js
+temp.*.js
+scratch_*.txt
+scratch_*.js

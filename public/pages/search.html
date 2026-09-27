@@ -1438,7 +1438,8 @@
             <div class="p-6 flex-1 flex flex-col justify-between border-b md:border-b-0 md:border-r border-[#001334]/5">
               <div>
                 <h3 class="text-xl font-bold text-[#001334]">${item.details.hotelName}</h3>
-                <p class="text-sm text-gray-500 mb-3 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> ${item.details.location}</p>
+                <p class="text-sm text-gray-500 mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> ${item.details.location}</p>
+                <button onclick="event.stopPropagation(); openHotelMapModal('${(item.details.hotelName || '').replace(/'/g, "\\'")}', '${(item.details.location || '').replace(/'/g, "\\'")}')" class="text-xs text-[#4285F4] font-bold hover:text-[#3367D6] flex items-center gap-1 mb-3 transition-colors hover:underline"><span class="material-symbols-outlined text-[14px]">map</span> ดูบนแผนที่</button>
                 <div class="flex flex-wrap gap-2 mt-4">
                   ${amenitiesHtml}
                 </div>
@@ -3326,6 +3327,127 @@ window.closeMapModal = function() {
     document.getElementById('real-map-modal').classList.remove('flex');
 };
 </script>
+
+<!-- Hotel Map Modal -->
+<div id="hotel-map-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[200] hidden flex-col items-center justify-center transition-opacity duration-300">
+    <div class="bg-white w-[95%] max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[70vh] max-h-[700px] animate-[fadeIn_0.3s_ease-out]">
+        <div class="flex justify-between items-center p-4 border-b border-gray-100 bg-white">
+            <h3 id="hotel-map-title" class="text-lg font-bold font-display text-primary flex items-center gap-2"><span class="material-symbols-outlined text-secondary">hotel</span> ตำแหน่งโรงแรม</h3>
+            <button onclick="closeHotelMapModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition"><span class="material-symbols-outlined text-sm">close</span></button>
+        </div>
+        <div id="hotel-map-container" class="w-full flex-1 bg-gray-200 relative z-10"></div>
+        <div class="p-4 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p class="text-xs text-gray-500">แผนที่จาก OpenStreetMap (ไม่มีค่าใช้จ่าย)</p>
+            <a id="btn-hotel-google-maps" href="#" target="_blank" class="px-5 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] text-white rounded-xl font-bold text-sm shadow-md transition flex items-center gap-2 w-full sm:w-auto justify-center">
+                <span class="material-symbols-outlined text-[18px]">map</span> เปิดนำทางใน Google Maps
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+window.hotelLeafletMap = null;
+window.hotelMapMarker = null;
+
+window.openHotelMapModal = function(hotelName, location) {
+    document.getElementById('hotel-map-modal').classList.remove('hidden');
+    document.getElementById('hotel-map-modal').classList.add('flex');
+    document.getElementById('hotel-map-title').innerHTML = '<span class="material-symbols-outlined text-secondary">hotel</span> ' + hotelName;
+    
+    const searchQuery = hotelName + ' ' + (location || '');
+    document.getElementById('btn-hotel-google-maps').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(searchQuery);
+    
+    const knownHotels = {
+        'Hilton Pattaya': [12.9354, 100.8837],
+        'Centara Grand Mirage Beach Resort Pattaya': [12.9575, 100.8856],
+        'The Shore at Katathani': [7.7946, 98.3005],
+        'Hilton London Park Lane': [51.5055, -0.1504],
+        'Capsule Hotel Shibuya': [35.6580, 139.7016],
+        'Rayavadee': [8.0032, 98.8377],
+        'JW Marriott Phuket': [8.0225, 98.2930],
+        'Banyan Tree Phuket': [7.9782, 98.2991],
+        'Anantara Chiang Mai': [18.7858, 98.9943],
+        'Four Seasons Chiang Mai': [18.8268, 98.9532],
+        'Amanpuri Phuket': [7.9833, 98.2784],
+        'Mandarin Oriental Bangkok': [13.7235, 100.5135],
+        'The Siam Bangkok': [13.7798, 100.5078],
+        'Sala Rattanakosin': [13.7417, 100.4908],
+        'Park Hyatt Bangkok': [13.7450, 100.5411],
+        'Rosewood Bangkok': [13.7306, 100.5520],
+        'Capella Bangkok': [13.7107, 100.5135],
+        'Cap an Peri Mallorca': [39.5696, 2.6368],
+        'Jumeirah Port Soller': [39.7742, 2.6940],
+        'Hotel Es Princep': [39.5676, 2.6528],
+        'Belmond La Residencia': [39.7474, 2.6480]
+    };
+    
+    const cityFallback = {
+        'Pattaya': [12.9236, 100.8825], 'Phuket': [7.8804, 98.3923],
+        'Chiang Mai': [18.7883, 98.9853], 'Bangkok': [13.7563, 100.5018],
+        'London': [51.5074, -0.1278], 'Tokyo': [35.6762, 139.6503],
+        'Krabi': [8.0853, 98.9063], 'Singapore': [1.3521, 103.8198],
+        'Mallorca': [39.5696, 2.6502], 'Palma': [39.5696, 2.6502]
+    };
+    
+    let coords = knownHotels[hotelName];
+    if (!coords && location) {
+        for (const [city, c] of Object.entries(cityFallback)) {
+            if (location.toLowerCase().includes(city.toLowerCase())) {
+                const hash = hotelName.split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0);
+                coords = [c[0] + ((hash % 50) / 500), c[1] + (((hash >> 3) % 50) / 500)];
+                break;
+            }
+        }
+    }
+    if (!coords) coords = [13.75, 100.50];
+    
+    setTimeout(() => {
+        if (!window.hotelLeafletMap) {
+            window.hotelLeafletMap = L.map('hotel-map-container');
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(window.hotelLeafletMap);
+        }
+        
+        if (window.hotelMapMarker) window.hotelLeafletMap.removeLayer(window.hotelMapMarker);
+        
+        const icon = L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div class="flex flex-col items-center" style="transform: translate(-50%, -100%); width: max-content;">
+                       <div class="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-lg ring-3 ring-white z-50 border-2 border-white">
+                           <span class="material-symbols-outlined text-[24px]">hotel</span>
+                       </div>
+                       <div class="mt-2 bg-white px-4 py-2 text-[12px] rounded-xl shadow-lg text-gray-800 font-bold border border-gray-100 whitespace-nowrap max-w-[200px] line-clamp-1">${hotelName}</div>
+                   </div>`,
+            iconSize: [0, 0],
+            iconAnchor: [0, 0]
+        });
+        
+        window.hotelMapMarker = L.marker(coords, {icon: icon}).addTo(window.hotelLeafletMap);
+        
+        const gmUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(searchQuery);
+        window.hotelMapMarker.bindPopup(`
+            <div class="text-center p-2 min-w-[160px]">
+                <p class="font-bold text-gray-800 text-sm mb-1">${hotelName}</p>
+                <p class="text-xs text-gray-500 mb-3">${location || ''}</p>
+                <a href="${gmUrl}" target="_blank" class="inline-flex items-center gap-1.5 bg-[#4285F4] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#3367D6] transition-colors w-full justify-center shadow-md">
+                    <span class="material-symbols-outlined text-[16px]">location_on</span> ดูสถานที่จริง
+                </a>
+            </div>
+        `, { closeButton: true, offset: [0, -55], className: 'custom-popup' }).openPopup();
+        
+        window.hotelLeafletMap.setView(coords, 15);
+        window.hotelLeafletMap.invalidateSize();
+    }, 150);
+};
+
+window.closeHotelMapModal = function() {
+    document.getElementById('hotel-map-modal').classList.add('hidden');
+    document.getElementById('hotel-map-modal').classList.remove('flex');
+};
+</script>
+
 </body>
 
 </html>
