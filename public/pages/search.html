@@ -2071,6 +2071,14 @@
           
           ${roomsHtml}
           ${addonsHtml}
+
+          <!-- Reviews Section -->
+          <div class="mt-8 border-t border-gray-100 pt-6">
+            <h4 class="font-bold text-gray-800 mb-4 text-base flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-secondary">reviews</span> รีวิวจากผู้เข้าพัก
+            </h4>
+            ${generateHotelReviews(item.details.hotelName, item.details.rating || 4.5)}
+          </div>
         `;
       } else if (currentType === 'activity') {
         content.classList.add('max-w-4xl');
@@ -2434,6 +2442,117 @@
 
     let currentSmartTripData = null;
     let selectedSmartTripTier = 'signature';
+
+    
+    // === HOTEL REVIEWS SYSTEM ===
+    function generateHotelReviews(hotelName, rating) {
+        // Deterministic seed from hotel name
+        const seed = (hotelName || '').split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0);
+
+        const reviewers = [
+            { name: 'Thanaporn W.', avatar: 'TW', flag: 'TH', date: 'ก.ย. 2569' },
+            { name: 'Yuki Tanaka', avatar: 'YT', flag: 'JP', date: 'ก.ย. 2569' },
+            { name: 'Sarah M.', avatar: 'SM', flag: 'US', date: 'ส.ค. 2569' },
+            { name: 'Kim Ji-woo', avatar: 'KJ', flag: 'KR', date: 'ส.ค. 2569' },
+            { name: 'Priya S.', avatar: 'PS', flag: 'IN', date: 'ก.ค. 2569' },
+            { name: 'Marco R.', avatar: 'MR', flag: 'IT', date: 'ก.ค. 2569' },
+            { name: 'Somchai P.', avatar: 'SP', flag: 'TH', date: 'มิ.ย. 2569' },
+            { name: 'Emma L.', avatar: 'EL', flag: 'GB', date: 'มิ.ย. 2569' }
+        ];
+
+        const commentSets = [
+            { text: 'ห้องพักสะอาด วิวสวยมาก พนักงานใจดีและเป็นกันเอง อาหารเช้าอร่อย จะกลับมาพักอีกแน่นอน', pros: 'ทำเล / ห้องพัก / บริการ', tags: ['ทำเลดี', 'ห้องสะอาด'] },
+            { text: 'สิ่งอำนวยความสะดวกครบ สระว่ายน้ำสวย เดินถึงชายหาดง่าย เหมาะสำหรับพักผ่อนมาก', pros: 'สิ่งอำนวยความสะดวก / ทำเล', tags: ['สระว่ายน้ำสวย', 'ใกล้หาด'] },
+            { text: 'เกินราคาที่จ่ายไป ห้องพักหรูหรา อุปกรณ์ครบ Check-in รวดเร็ว WiFi แรง เหมาะกับทั้งครอบครัว', pros: 'คุ้มค่า / บริการ / เทคโนโลยี', tags: ['คุ้มค่า', 'WiFi แรง'] },
+            { text: 'บรรยากาศดีมาก เงียบสงบ เตียงนอนนุ่มมาก หลับสบาย อาหารเช้ามีให้เลือกหลากหลาย', pros: 'ที่นอน / อาหาร / บรรยากาศ', tags: ['เงียบสงบ', 'เตียงนุ่ม'] },
+            { text: 'พนักงานให้บริการดีเยี่ยม ช่วยจัดการเรื่องทัวร์ให้ด้วย ห้องพักกว้าง โลเคชั่นเดินทางสะดวก', pros: 'บริการ / ห้องกว้าง', tags: ['บริการดี', 'ห้องกว้าง'] },
+            { text: 'ประทับใจตั้งแต่ก้าวเข้ามา ล็อบบี้สวยหรู ได้ห้องอัพเกรดฟรี มีผลไม้ต้อนรับ จะแนะนำเพื่อนๆ แน่นอน', pros: 'ล็อบบี้ / บริการพิเศษ', tags: ['หรูหรา', 'อัพเกรดฟรี'] },
+            { text: 'โรงแรมดีงามเกินคาด ราคาสมเหตุสมผล อาหารเช้าระดับ 5 ดาว มีรถรับส่งสนามบิน สะดวกมาก', pros: 'อาหาร / รถรับส่ง', tags: ['อาหาร 5 ดาว', 'รถรับส่ง'] },
+            { text: 'เพิ่งพักมาสดๆ ร้อนๆ บอกเลยว่าดีมากๆ ห้องใหม่ สะอาด แอร์เย็นฉ่ำ จะกลับมาอีกครั้งเร็วๆ นี้', pros: 'ห้องใหม่ / ความสะอาด', tags: ['ห้องใหม่', 'แอร์เย็น'] }
+        ];
+
+        const subScores = [
+            { label: 'ความสะอาด', icon: 'cleaning_services' },
+            { label: 'ทำเลที่ตั้ง', icon: 'location_on' },
+            { label: 'การบริการ', icon: 'support_agent' },
+            { label: 'ความคุ้มค่า', icon: 'payments' }
+        ];
+
+        // Pick 3 reviews based on seed
+        const idx1 = Math.abs(seed) % commentSets.length;
+        const idx2 = Math.abs(seed + 37) % commentSets.length;
+        const idx3 = Math.abs(seed + 73) % commentSets.length;
+        const picks = [idx1, idx2, idx3].map((ci, i) => ({
+            reviewer: reviewers[Math.abs(seed + i * 17) % reviewers.length],
+            comment: commentSets[ci],
+            stars: Math.min(5, Math.max(4, Math.round(rating + (((seed + i) % 3) - 1) * 0.5)))
+        }));
+
+        const avgRating = rating > 5 ? (rating / 2).toFixed(1) : Number(rating).toFixed(1);
+        const totalReviews = 50 + Math.abs(seed % 200);
+
+        // Sub-scores
+        const subHtml = subScores.map((s, i) => {
+            const sc = Math.min(5, Math.max(3.5, parseFloat(avgRating) + (((seed + i * 11) % 5) - 2) * 0.3)).toFixed(1);
+            const pct = (parseFloat(sc) / 5 * 100).toFixed(0);
+            return `<div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-gray-400 text-[16px]">${s.icon}</span>
+                <span class="text-xs text-gray-600 w-20">${s.label}</span>
+                <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-secondary rounded-full" style="width: ${pct}%"></div>
+                </div>
+                <span class="text-xs font-bold text-gray-700 w-8 text-right">${sc}</span>
+            </div>`;
+        }).join('');
+
+        // Review cards
+        const reviewCardsHtml = picks.map(p => {
+            const starsHtml = Array.from({length: 5}, (_, i) =>
+                `<span class="material-symbols-outlined text-[14px] ${i < p.stars ? 'text-yellow-400' : 'text-gray-300'}">star</span>`
+            ).join('');
+            const tagsHtml = p.comment.tags.map(t =>
+                `<span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">${t}</span>`
+            ).join('');
+            const avatarColors = ['bg-blue-500', 'bg-teal-500', 'bg-purple-500', 'bg-pink-500', 'bg-indigo-500'];
+            const avatarColor = avatarColors[Math.abs(p.reviewer.name.charCodeAt(0)) % avatarColors.length];
+            return `
+            <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition mb-3">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-9 h-9 ${avatarColor} text-white rounded-full flex items-center justify-center text-xs font-bold shadow-sm">${p.reviewer.avatar}</div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <p class="font-bold text-gray-800 text-sm">${p.reviewer.name}</p>
+                            <span class="text-[10px] text-gray-400">${p.reviewer.flag}</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <div class="flex">${starsHtml}</div>
+                            <span class="text-[10px] text-gray-400">${p.reviewer.date}</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-700 leading-relaxed mb-2">${p.comment.text}</p>
+                <div class="flex flex-wrap gap-1.5 mt-2">${tagsHtml}</div>
+            </div>`;
+        }).join('');
+
+        return `
+        <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+            <!-- Summary -->
+            <div class="flex items-center gap-5 mb-5 pb-4 border-b border-gray-200">
+                <div class="text-center">
+                    <div class="text-4xl font-black text-primary">${avgRating}</div>
+                    <div class="flex justify-center mt-1">${Array.from({length: 5}, (_, i) => `<span class="material-symbols-outlined text-[14px] ${i < Math.round(avgRating) ? 'text-yellow-400' : 'text-gray-300'}">star</span>`).join('')}</div>
+                    <p class="text-[10px] text-gray-500 mt-1">${totalReviews} รีวิว</p>
+                </div>
+                <div class="flex-1 space-y-2">
+                    ${subHtml}
+                </div>
+            </div>
+            <!-- Reviews -->
+            ${reviewCardsHtml}
+            <p class="text-center text-xs text-gray-400 mt-3">แสดง 3 จาก ${totalReviews} รีวิว</p>
+        </div>`;
+    }
 
     async function generateSmartTrip() {
       window.unlockedUltraVip = false;
